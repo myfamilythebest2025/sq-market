@@ -48,9 +48,12 @@ window.SQMap = (function () {
       );
   }
 
-  /* Правильная ссылка на карточку филиала */
+  /* Ссылка на карточку филиала.
+     Берём прямой адрес по id — он открывается сразу. Короткая ссылка
+     go.2gis.com тоже работает, но идёт через лишнюю переадресацию,
+     поэтому оставляем её только как запасной вариант. */
   function cardUrl(b) {
-    return b.link || `https://2gis.kz/${CITY}/firm/${b.firmId}`;
+    return b.firmId ? `https://2gis.kz/${CITY}/firm/${b.firmId}` : (b.link || "");
   }
 
   /* Ссылка на виджет 2ГИС (режим без ключа) */
@@ -78,6 +81,24 @@ window.SQMap = (function () {
      ------------------------------------------------------------ */
   function openRoute(b) {
     const tab = window.open("", "_blank");
+
+    // Пока ждём геолокацию, вкладка не должна быть пустой
+    if (tab && tab.document) {
+      try {
+        tab.document.write(
+          '<!doctype html><html lang="ru"><head><meta charset="utf-8">' +
+          "<title>Открываем 2ГИС…</title><style>" +
+          "html,body{height:100%;margin:0}body{display:grid;place-items:center;" +
+          "font:600 15px/1.5 system-ui,sans-serif;background:#0c1310;color:#f4f3ec}" +
+          "i{display:block;width:34px;height:34px;margin:0 auto 14px;border-radius:50%;" +
+          "border:3px solid rgba(255,255,255,.2);border-top-color:#ff8a00;" +
+          "animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}" +
+          "</style></head><body><div><i></i>Открываем 2ГИС…</div></body></html>"
+        );
+        tab.document.close();
+      } catch (e) { /* не критично */ }
+    }
+
     const go = (url) => {
       if (tab && !tab.closed) {
         tab.location.href = url;
@@ -87,19 +108,29 @@ window.SQMap = (function () {
       }
     };
 
-    if (!navigator.geolocation) return go(routeUrl(b));
-
     let done = false;
     const finish = (url) => { if (!done) { done = true; go(url); } };
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => finish(routeFromUrl({ lon: pos.coords.longitude, lat: pos.coords.latitude }, b)),
-      () => finish(routeUrl(b)),
-      { enableHighAccuracy: false, timeout: 7000, maximumAge: 300000 }
-    );
+    const ask = () => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => finish(routeFromUrl({ lon: pos.coords.longitude, lat: pos.coords.latitude }, b)),
+        () => finish(routeUrl(b)),
+        { enableHighAccuracy: false, timeout: 4000, maximumAge: 600000 }
+      );
+      // страховка: дольше четырёх секунд человека не держим
+      setTimeout(() => finish(routeUrl(b)), 4200);
+    };
 
-    // страховка, если браузер молчит и не вызывает ни один колбэк
-    setTimeout(() => finish(routeUrl(b)), 7500);
+    if (!navigator.geolocation) return finish(routeUrl(b));
+
+    // Если в местоположении уже отказали — не ждём и не спрашиваем снова
+    if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: "geolocation" })
+        .then((p) => (p.state === "denied" ? finish(routeUrl(b)) : ask()))
+        .catch(ask);
+    } else {
+      ask();
+    }
   }
 
   /* ============================================================

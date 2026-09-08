@@ -259,7 +259,7 @@ window.SQRender = (function () {
         </button>
         <div class="branch__links">
           <a class="chip" href="${window.SQMap.routeUrl(b)}" data-route="${i}" target="_blank" rel="noopener">${ico("route")} Маршрут</a>
-          <a class="chip" href="${esc(b.link)}" target="_blank" rel="noopener">${ico("pin")} Карточка в 2ГИС</a>
+          <a class="chip" href="${esc(window.SQMap.cardUrl(b))}" target="_blank" rel="noopener">${ico("pin")} Карточка в 2ГИС</a>
         </div>
       </div>`
       )
@@ -326,7 +326,7 @@ window.SQRender = (function () {
     const addr = $("#footer-addr");
     if (addr) {
       addr.innerHTML = window.SQ.branches
-        .map((b) => `<li><a href="${esc(b.link)}" target="_blank" rel="noopener">${esc(b.address)}</a></li>`)
+        .map((b) => `<li><a href="${esc(window.SQMap.cardUrl(b))}" target="_blank" rel="noopener">${esc(b.address)}</a></li>`)
         .join("");
     }
 

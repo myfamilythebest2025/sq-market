@@ -1,0 +1,978 @@
+/* ============================================================
+   SQ MARKET — КОМПОНЕНТЫ
+   Кнопки, «жидкая» навигация, карточки, модалки, лайтбокс,
+   бегущая строка, аккордеон, формы, курсор, прелоадер.
+   ============================================================ */
+
+/* ============================================================
+   1. КНОПКИ
+   Разметка (важно — её ждёт buttons.js):
+   <a class="btn btn--accent" data-magnetic>
+     <span class="btn__fill"></span>
+     <span class="btn__slot"><span>Текст</span><span aria-hidden="true">Текст</span></span>
+     <span class="btn__ico">→</span>
+   </a>
+   ============================================================ */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 1.02em 1.85em;
+  border-radius: var(--r-pill);
+  font-family: var(--font-display);
+  font-size: 0.87rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  isolation: isolate;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
+  transition: transform 0.5s var(--e-out), box-shadow var(--t-base) var(--e-out),
+    color var(--t-base) var(--e-out), border-color var(--t-base) var(--e-out);
+}
+
+.btn.is-magnetic { transition: transform 0.12s linear, box-shadow var(--t-base) var(--e-out); }
+
+/* Заливка-«шторка», которая наезжает снизу */
+.btn__fill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--btn-fill, var(--brand-orange));
+  transform: translate3d(0, 101%, 0);
+  transition: transform 0.62s var(--e-out);
+}
+
+.btn:hover .btn__fill,
+.btn:focus-visible .btn__fill { transform: translate3d(0, 0, 0); }
+
+/* «Слот-машина»: текст уезжает вверх, снизу приезжает копия */
+.btn__slot {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  height: 1.35em;
+  line-height: 1.35;
+}
+
+.btn__slot > span {
+  grid-area: 1 / 1;
+  display: block;
+  line-height: 1.35;
+  white-space: nowrap;
+  transition: transform 0.52s var(--e-out), opacity 0.3s linear;
+}
+
+.btn__slot > span:first-child { transform: translate3d(0, 0, 0); }
+.btn__slot > span:last-child { transform: translate3d(0, 105%, 0); }
+
+.btn:hover .btn__slot > span:first-child,
+.btn:focus-visible .btn__slot > span:first-child { transform: translate3d(0, -105%, 0); }
+
+.btn:hover .btn__slot > span:last-child,
+.btn:focus-visible .btn__slot > span:last-child { transform: translate3d(0, 0, 0); }
+
+/* Наведение — только там, где есть мышь. На тапе состояние :hover
+   залипает и кнопка остаётся «нажатой». */
+@media (hover: none) {
+  .btn:hover .btn__fill { transform: translate3d(0, 101%, 0); }
+  .btn:hover .btn__slot > span:first-child { transform: none; }
+  .btn:hover .btn__slot > span:last-child { transform: translate3d(0, 105%, 0); }
+  .btn:hover::after { transform: translate3d(-120%, 0, 0); }
+  .btn:hover .btn__ico svg:first-child { transform: none; }
+  .btn:hover .btn__ico svg:last-child { transform: translate3d(-140%, 0, 0); }
+  .icon-btn:hover { transform: none; color: var(--ink); border-color: var(--line); }
+  .icon-btn:hover::before { transform: scale(0); }
+  .card:hover { transform: none; box-shadow: none; }
+  .card:hover::before { transform: scaleX(0); }
+  .card:hover .card__ico { transform: none; background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); }
+  .chip:hover { transform: none; background: var(--bg-elev); color: inherit; border-color: var(--line); }
+
+  /* Ничего не должно сдвигаться от касания: на телефоне :hover
+     «залипает» после нажатия, и блок остаётся уехавшим вбок. */
+  .brand:hover,
+  .shot:hover img,
+  .branch:hover,
+  .info-line:hover,
+  .mascot__use:hover,
+  .footer__col a:hover,
+  .socials a:hover,
+  .modal__close:hover,
+  .acc__sign:hover { transform: none; }
+
+  .acc__head:hover,
+  .dish:hover,
+  .menu__mobile .acc__head:hover,
+  .menu__mobile .dish:hover { padding-left: 0; }
+
+  .acc__head:hover { color: var(--ink); }
+  .dish:hover .dish__name { color: inherit; }
+  .shot:hover .shot__veil { opacity: 1; }
+  .day__btn:hover { background: transparent; }
+  .day__btn.is-active:hover { background: rgba(255, 255, 255, 0.09); }
+  .header-phone:hover { color: inherit; }
+  .socials a:hover { background: none; color: inherit; border-color: var(--line); }
+  .info-line:hover { border-color: var(--line); }
+  .mascot__use:hover { background: rgba(255, 255, 255, 0.08); }
+  .footer__col a:hover { color: var(--dark-ink-soft); }
+}
+
+/* Иконка-стрелка: уезжает вправо и приезжает слева */
+.btn__ico {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 1.1em;
+  height: 1.1em;
+  overflow: hidden;
+  flex: none;
+}
+
+.btn__ico svg {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s var(--e-out);
+}
+
+.btn__ico svg:last-child { transform: translate3d(-140%, 0, 0); }
+.btn:hover .btn__ico svg:first-child { transform: translate3d(140%, 0, 0); }
+.btn:hover .btn__ico svg:last-child { transform: translate3d(0, 0, 0); }
+
+/* Блик, пробегающий по кнопке */
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.42) 50%, transparent 62%);
+  transform: translate3d(-120%, 0, 0);
+  transition: transform 0.85s var(--e-out);
+  pointer-events: none;
+}
+
+.btn:hover::after { transform: translate3d(120%, 0, 0); }
+
+/* --- Варианты --- */
+.btn--accent {
+  background: var(--brand-orange);
+  color: #fff;
+  --btn-fill: var(--brand-green);
+  box-shadow: var(--sh-glow);
+}
+.btn--accent:hover { box-shadow: 0 18px 46px -14px rgba(10, 107, 62, 0.5); }
+
+.btn--primary {
+  background: var(--primary);
+  color: var(--primary-ink);
+  --btn-fill: var(--brand-orange);
+}
+
+.btn--ghost {
+  border: 1.5px solid var(--line-strong);
+  color: var(--ink);
+  --btn-fill: var(--ink);
+}
+.btn--ghost:hover { color: var(--bg); border-color: transparent; }
+
+.btn--glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-line);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  color: var(--ink);
+  --btn-fill: var(--brand-orange);
+  box-shadow: var(--glass-shadow);
+}
+.btn--glass:hover { color: #fff; }
+
+.btn--sm { padding: 0.78em 1.3em; font-size: 0.78rem; }
+.btn--lg { padding: 1.2em 2.2em; font-size: 0.95rem; }
+.btn--block { width: 100%; justify-content: center; }
+
+/* Круглая иконочная кнопка (тема, стрелки лайтбокса, «наверх») */
+.icon-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg-elev);
+  color: var(--ink);
+  overflow: hidden;
+  flex: none;
+  transition: color var(--t-base) var(--e-out), border-color var(--t-base) var(--e-out),
+    transform var(--t-base) var(--e-back);
+}
+
+.icon-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  border-radius: inherit;
+  transform: scale(0);
+  transition: transform 0.45s var(--e-out);
+}
+
+.icon-btn:hover { color: var(--primary-ink); border-color: transparent; transform: scale(1.06); }
+.icon-btn:hover::before { transform: scale(1); }
+.icon-btn > * { position: relative; z-index: 1; }
+
+/* ============================================================
+   2. «ЖИДКАЯ» НАВИГАЦИЯ (liquid glass + пружина)
+   Цветная «капля» перетекает между пунктами и растягивается
+   в движении — координаты задаёт nav.js через переменные.
+   ============================================================ */
+.pill-nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-line);
+  backdrop-filter: blur(18px) saturate(1.6);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  box-shadow: var(--glass-shadow);
+  isolation: isolate;
+}
+
+.pill-nav__blob {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  height: calc(100% - 12px);
+  border-radius: var(--r-pill);
+  background: var(--blob-color, var(--primary));
+  transform: translate3d(var(--blob-x, 0px), 0, 0);
+  width: var(--blob-w, 0px);
+  opacity: var(--blob-o, 0);
+  transition: background 0.35s var(--e-out), opacity 0.28s var(--e-out);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.pill-nav__item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.72em 1.15em;
+  border-radius: var(--r-pill);
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  transition: color 0.3s var(--e-out);
+}
+
+.pill-nav__item:hover,
+.pill-nav__item.is-active { color: #fff; }
+
+[data-theme="dark"] .pill-nav__item:hover,
+[data-theme="dark"] .pill-nav__item.is-active { color: #06140c; }
+
+/* Когда курсор ушёл на другой пункт, «капля» уезжает вместе с ним —
+   значит активный пункт снова должен стать обычным, иначе белый текст
+   остаётся на светлом стекле и не читается. */
+.pill-nav:hover .pill-nav__item.is-active:not(:hover) { color: var(--ink-soft); }
+.pill-nav:hover .pill-nav__item.is-active:not(:hover) .pn-slot > span:first-child { transform: none; }
+.pill-nav:hover .pill-nav__item.is-active:not(:hover) .pn-slot > span:last-child { transform: translate3d(0, 130%, 0); }
+.pill-nav:hover .pill-nav__item.is-active:not(:hover) .pn-dot {
+  background: var(--item-color, var(--primary));
+  transform: none;
+}
+
+/* Слот-машина внутри пункта меню */
+.pn-slot {
+  display: grid;
+  overflow: hidden;
+  height: 1.5em;
+  line-height: 1.5;
+}
+
+.pn-slot > span {
+  grid-area: 1 / 1;
+  display: block;
+  line-height: 1.5;
+  transition: transform 0.44s var(--e-out);
+}
+
+.pn-slot > span:last-child { transform: translate3d(0, 105%, 0); }
+
+.pill-nav__item:hover .pn-slot > span:first-child,
+.pill-nav__item.is-active .pn-slot > span:first-child { transform: translate3d(0, -120%, 0); }
+
+.pill-nav__item:hover .pn-slot > span:last-child,
+.pill-nav__item.is-active .pn-slot > span:last-child { transform: translate3d(0, 0, 0); }
+
+.pn-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--item-color, var(--primary));
+  transition: background 0.3s var(--e-out), transform 0.4s var(--e-back);
+  flex: none;
+}
+
+.pill-nav__item:hover .pn-dot,
+.pill-nav__item.is-active .pn-dot { background: currentColor; transform: scale(1.5); }
+
+/* Размеры встроенных иконок (SVG приходят из icons.js с размером 1em) */
+.card__ico svg { width: 26px; height: 26px; }
+.icon-btn svg { width: 20px; height: 20px; }
+.chip svg { width: 15px; height: 15px; }
+.card__more svg { width: 1.05em; height: 1.05em; }
+.day__badge svg { width: 16px; height: 16px; }
+.info-line__ico svg { width: 20px; height: 20px; }
+.socials svg { width: 19px; height: 19px; }
+.modal .card__ico svg { width: 26px; height: 26px; }
+
+/* ============================================================
+   3. КАРТОЧКИ
+   ============================================================ */
+.card {
+  position: relative;
+  display: grid;
+  gap: 0.85rem;
+  padding: clamp(1.4rem, 2.4vw, 2.1rem);
+  border-radius: var(--r-md);
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  transition: transform 0.55s var(--e-out), box-shadow 0.55s var(--e-out),
+    border-color 0.4s var(--e-out);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-orange), var(--primary));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--e-out);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--sh-md);
+  border-color: transparent;
+}
+
+.card:hover::before { transform: scaleX(1); }
+
+.card__ico {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+  transition: background 0.4s var(--e-out), color 0.4s var(--e-out), transform 0.5s var(--e-back);
+}
+
+.card:hover .card__ico {
+  background: var(--brand-orange);
+  color: #fff;
+  transform: rotate(-8deg) scale(1.06);
+}
+
+.card__title {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.card__text {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.card__more {
+  margin-top: auto;
+  padding-top: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-orange);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.4s var(--e-out), transform 0.4s var(--e-out);
+}
+
+.card:hover .card__more { opacity: 1; transform: none; }
+
+/* Плитка-чип */
+.chip {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.55em 1em;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: var(--bg-elev);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: transform 0.4s var(--e-back), border-color 0.3s, background 0.3s, color 0.3s;
+}
+
+.chip:hover {
+  transform: translateY(-3px);
+  border-color: transparent;
+  background: var(--primary);
+  color: var(--primary-ink);
+}
+
+.chip i {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--brand-orange);
+  flex: none;
+}
+
+/* ============================================================
+   3б. ТОЧКИ-СТРАНИЦЫ ПОД КАРУСЕЛЬЮ (телефон)
+   Рисуются из ui.js, на десктопе прячутся сами — там прокрутки нет.
+   ============================================================ */
+.dots[hidden] { display: none; }   /* иначе display:flex перебивает атрибут hidden */
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 1.2rem;
+}
+
+.dots button {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-pill);
+  background: var(--line-strong);
+  transition: width 0.4s var(--e-out), background 0.35s var(--e-out);
+}
+
+.dots button.is-on { width: 24px; background: var(--brand-orange); }
+
+/* Если карточек очень много, вместо точек — тонкая полоса прогресса */
+.dots--bar {
+  display: block;
+  width: min(180px, 50%);
+  height: 3px;
+  border-radius: var(--r-pill);
+  background: var(--line-strong);
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.dots--bar i {
+  display: block;
+  width: 34%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand-orange);
+  transform: translateX(calc(var(--p, 0) * 194%));
+  transition: transform 0.18s linear;
+}
+
+/* Счётчик позиций в заголовке категории (аккордеон ассортимента) */
+.acc__count {
+  margin-left: 0.6em;
+  padding: 0.15em 0.55em;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  color: var(--primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  vertical-align: middle;
+}
+
+.menu__note {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.6rem;
+}
+
+/* ============================================================
+   4. МОДАЛЬНЫЕ ОКНА
+   ============================================================ */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: clamp(0.8rem, 3vw, 2.5rem);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.modal.is-open { pointer-events: auto; visibility: visible; }
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 14, 10, 0.62);
+  backdrop-filter: blur(10px) saturate(0.9);
+  -webkit-backdrop-filter: blur(10px) saturate(0.9);
+  opacity: 0;
+  transition: opacity 0.45s var(--e-out);
+}
+
+.modal.is-open .modal__backdrop { opacity: 1; }
+
+.modal__panel {
+  position: relative;
+  width: min(980px, 100%);
+  max-height: min(88svh, 900px);
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  border-radius: var(--r-lg);
+  background: var(--bg-elev);
+  color: var(--ink);
+  box-shadow: var(--sh-lg);
+  opacity: 0;
+  transform: translate3d(0, 34px, 0) scale(0.97);
+  transition: opacity 0.5s var(--e-out), transform 0.62s var(--e-out);
+}
+
+.modal.is-open .modal__panel { opacity: 1; transform: none; }
+
+.modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  transition: transform 0.4s var(--e-back), background 0.3s, color 0.3s;
+}
+
+.modal__close:hover { transform: rotate(90deg); background: var(--brand-orange); color: #fff; border-color: transparent; }
+
+.modal__media {
+  position: relative;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background: var(--bg-sunk);
+}
+
+@media (max-width: 640px) { .modal__media { aspect-ratio: 4 / 3; } }
+
+/* аккуратная полоса прокрутки внутри окна */
+.modal__panel { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+.modal__panel::-webkit-scrollbar { width: 8px; }
+.modal__panel::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 4px; }
+
+.modal__media img { width: 100%; height: 100%; object-fit: cover; }
+
+.modal__media::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 45%;
+  background: linear-gradient(to top, var(--bg-elev), transparent);
+}
+
+.modal__body {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.4rem, 3.2vw, 2.6rem);
+}
+
+.modal__kicker {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-orange);
+}
+
+.modal__title { font-size: clamp(1.4rem, 3vw, 2.2rem); }
+
+.modal__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.7rem;
+  margin-top: 0.4rem;
+}
+
+.modal__fact {
+  padding: 0.9rem 1rem;
+  border-radius: var(--r-sm);
+  background: var(--bg-sunk);
+  border: 1px solid var(--line);
+}
+
+.modal__fact b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+}
+
+.modal__fact span { font-size: 0.8rem; color: var(--ink-soft); }
+
+/* Карта филиала внутри окна (телефон). Виджет 2ГИС уменьшаем,
+   чтобы его карточка организации помещалась целиком. */
+.modal__map {
+  position: relative;
+  height: 46svh;
+  min-height: 280px;
+  overflow: hidden;
+  background: var(--bg-sunk);
+}
+
+.modal__map iframe {
+  position: absolute;
+  inset: 0;
+  width: 139%;
+  height: 139%;
+  border: 0;
+  transform: scale(0.72);
+  transform-origin: top left;
+  pointer-events: none;
+}
+
+/* Полоса с адресом поверх карты. Она же закрывает служебную плашку
+   виджета «Посмотреть на карте Москвы». */
+.modal__maptag {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  padding: 0.7rem 1rem;
+  padding-right: 3.6rem;
+  background: rgba(8, 15, 11, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+   5. ЛАЙТБОКС ГАЛЕРЕИ
+   ============================================================ */
+.lightbox .modal__panel {
+  width: min(1180px, 100%);
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.lightbox__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 34svh;
+}
+
+.lightbox__stage img {
+  max-height: 74svh;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-lg);
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 0.45s var(--e-out), transform 0.7s var(--e-out);
+}
+
+.lightbox__stage img.is-shown { opacity: 1; transform: none; }
+
+.lightbox__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.9rem;
+  color: #fff;
+}
+
+.lightbox__caption { font-size: 0.9rem; font-weight: 600; }
+.lightbox__count { font-size: 0.8rem; opacity: 0.65; font-variant-numeric: tabular-nums; }
+
+.lightbox .icon-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+/* ============================================================
+   6. БЕГУЩАЯ СТРОКА
+   ============================================================ */
+.ticker {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(0.9rem, 1.7vw, 1.4rem);
+  background: var(--primary);
+  color: #fff;
+  border-block: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.ticker--orange { background: var(--brand-orange); }
+
+.ticker__track {
+  display: flex;
+  width: max-content;
+  gap: 2.6rem;
+  animation: tickerMove var(--dur, 34s) linear infinite;
+  will-change: transform;
+}
+
+.ticker:hover .ticker__track { animation-play-state: paused; }
+
+.ticker__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.6rem;
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.7vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ticker__item::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+@keyframes tickerMove {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* ============================================================
+   7. АККОРДЕОН
+   ============================================================ */
+.acc { border-top: 1px solid var(--line); }
+
+.acc__item { border-bottom: 1px solid var(--line); }
+
+.acc__head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: clamp(1.1rem, 2vw, 1.6rem) 0;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.22rem);
+  font-weight: 700;
+  color: var(--ink);
+  transition: color 0.3s var(--e-out), padding-left 0.45s var(--e-out);
+}
+
+.acc__head:hover { color: var(--brand-orange); padding-left: 10px; }
+
+.acc__sign {
+  margin-left: auto;
+  position: relative;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  flex: none;
+  transition: transform 0.5s var(--e-back), background 0.4s, border-color 0.4s;
+}
+
+.acc__sign::before,
+.acc__sign::after {
+  content: "";
+  position: absolute;
+  inset: 50% 9px auto 9px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: translateY(-50%);
+  transition: transform 0.45s var(--e-out), opacity 0.3s;
+}
+
+.acc__sign::after { transform: translateY(-50%) rotate(90deg); }
+
+.acc__item.is-open .acc__sign { transform: rotate(180deg); background: var(--brand-orange); border-color: transparent; color: #fff; }
+.acc__item.is-open .acc__sign::after { opacity: 0; transform: translateY(-50%) rotate(0); }
+
+.acc__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.6s var(--e-out);
+}
+
+.acc__item.is-open .acc__body { grid-template-rows: 1fr; }
+
+.acc__inner {
+  overflow: hidden;
+  color: var(--ink-soft);
+}
+
+.acc__inner > div { padding-bottom: 1.5rem; max-width: 70ch; }
+
+/* ============================================================
+   8. ФОРМА
+   ============================================================ */
+.field { position: relative; display: grid; }
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 1.55rem 1.1rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--bg-elev);
+  color: var(--ink);
+  transition: border-color 0.3s var(--e-out), box-shadow 0.3s var(--e-out);
+}
+
+.field textarea { min-height: 128px; resize: vertical; }
+
+.field label {
+  position: absolute;
+  left: 1.1rem;
+  top: 1.05rem;
+  font-size: 0.94rem;
+  color: var(--ink-faint);
+  pointer-events: none;
+  transform-origin: left top;
+  transition: transform 0.32s var(--e-out), color 0.32s var(--e-out);
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--brand-orange);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-orange) 16%, transparent);
+}
+
+.field input:focus + label,
+.field textarea:focus + label,
+.field input:not(:placeholder-shown) + label,
+.field textarea:not(:placeholder-shown) + label {
+  transform: translateY(-0.72rem) scale(0.76);
+  color: var(--brand-orange);
+}
+
+.field.is-error input,
+.field.is-error textarea { border-color: #e04a3a; }
+
+.field__err {
+  font-size: 0.75rem;
+  color: #e04a3a;
+  margin-top: 0.35rem;
+  min-height: 1em;
+}
+
+/* ============================================================
+   9. ПРЕЛОАДЕР, ПРОГРЕСС СКРОЛЛА, «НАВЕРХ»
+   ============================================================ */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: calc(var(--z-header) + 1);
+  height: 3px;
+  width: 100%;
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--primary), var(--brand-orange));
+}
+
+#preloader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-preloader);
+  display: grid;
+  place-items: center;
+  background: var(--dark-bg);
+  color: var(--dark-ink);
+  transition: opacity 0.6s var(--e-out), visibility 0.6s;
+}
+
+#preloader.is-done { opacity: 0; visibility: hidden; }
+
+.preloader__inner { display: grid; justify-items: center; gap: 1.4rem; }
+
+.preloader__bag {
+  width: clamp(92px, 14vw, 140px);
+  animation: bagBob 1.5s var(--e-inout) infinite;
+}
+
+@keyframes bagBob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-14px) rotate(2deg); }
+}
+
+.preloader__bar {
+  width: min(260px, 60vw);
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+
+.preloader__bar i {
+  display: block;
+  height: 100%;
+  width: var(--pl, 0%);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--brand-orange), var(--neon));
+  transition: width 0.3s var(--e-out);
+}
+
+.preloader__label {
+  font-size: var(--fs-micro);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.to-top {
+  position: fixed;
+  right: clamp(1rem, 2.5vw, 2rem);
+  bottom: clamp(1rem, 2.5vw, 2rem);
+  z-index: calc(var(--z-header) - 1);
+  opacity: 0;
+  transform: translateY(16px) scale(0.9);
+  pointer-events: none;
+  transition: opacity 0.4s var(--e-out), transform 0.5s var(--e-back);
+}
+
+.to-top.is-shown { opacity: 1; transform: none; pointer-events: auto; }

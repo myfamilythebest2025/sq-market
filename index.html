@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SQ MARKET — магазин у дома нового поколения в Астане</title>
+<meta name="description" content="SQ Market — современный convenience market в Астане: готовая еда, свежесваренный кофе, выпечка, продукты и зона со столиками. Круглосуточно, Wi-Fi, намазхана. Две точки в городе.">
+<meta name="theme-color" content="#0a6b3e">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="SQ MARKET — всё необходимое рядом">
+<meta property="og:description" content="Готовая еда, кофе, выпечка и продукты в одном месте. Круглосуточно. Астана.">
+<meta property="og:image" content="assets/img/facade-day.jpg">
+<meta property="og:locale" content="ru_RU">
+
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/tokens.css?v=13">
+<link rel="stylesheet" href="assets/css/base.css?v=13">
+<link rel="stylesheet" href="assets/css/components.css?v=13">
+<link rel="stylesheet" href="assets/css/sections.css?v=13">
+<link rel="stylesheet" href="assets/css/mobile.css?v=13">
+</head>
+
+<body>
+
+<!-- ============================================================
+     ПРЕЛОАДЕР
+     ============================================================ -->
+<div id="preloader">
+  <div class="preloader__inner">
+    <img class="preloader__bag" src="assets/img/mascot.png" alt="" width="140" height="142">
+    <div class="preloader__bar"><i></i></div>
+    <p class="preloader__label">SQ Market · загружаем</p>
+  </div>
+</div>
+
+<div class="scroll-progress" aria-hidden="true"></div>
+
+<!-- ============================================================
+     ШАПКА
+     ============================================================ -->
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="#top" aria-label="SQ Market — на главную">
+      <img src="assets/img/logo-wordmark.png" alt="SQ Market" width="180" height="36">
+    </a>
+
+    <nav class="site-header__nav" aria-label="Основное меню">
+      <div class="pill-nav"></div>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="header-phone" href="#" data-phone>+7 700 448 00 00</a>
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Сменить тему"></button>
+      <a class="btn btn--accent btn--sm" href="#places" data-magnetic>
+        <span class="btn__fill"></span>
+        <span class="btn__slot"><span>Адреса</span><span aria-hidden="true">Адреса</span></span>
+      </a>
+      <button class="icon-btn burger" type="button" aria-expanded="false" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Мобильное меню -->
+<div class="mobile-nav" aria-hidden="true">
+  <nav class="mobile-nav__links"></nav>
+  <div class="mobile-nav__foot">
+    <a class="btn btn--accent btn--block" href="#" data-wa target="_blank" rel="noopener">
+      <span class="btn__fill"></span>
+      <span class="btn__slot"><span>Написать в WhatsApp</span><span aria-hidden="true">Написать в WhatsApp</span></span>
+    </a>
+    <a class="btn btn--ghost btn--block" href="#" data-phone>
+      <span class="btn__fill"></span>
+      <span class="btn__slot"><span>+7 700 448 00 00</span><span aria-hidden="true">+7 700 448 00 00</span></span>
+    </a>
+  </div>
+</div>
+
+<main id="top">
+
+  <!-- ============================================================
+       ГЕРОЙ
+       ============================================================ -->
+  <section class="hero">
+    <div class="hero__bg" data-parallax="0.12">
+      <img src="assets/img/facade-day.jpg" alt="Фасад магазина SQ Market" fetchpriority="high" width="1600" height="1200">
+    </div>
+    <div class="hero__veil" aria-hidden="true"></div>
+    <img class="hero__mascot" src="assets/img/mascot.png" alt="" aria-hidden="true" width="400" height="405">
+
+    <div class="wrap hero__grid">
+      <div>
+        <p class="hero__kicker" data-reveal><b>Астана</b> Магазин у дома нового поколения</p>
+
+        <h1 class="hero__title" data-split data-fit>Всё необходимое рядом</h1>
+
+        <p class="hero__rot" data-reveal style="--d:340ms">
+          Заходите за <span class="rotator"></span>
+        </p>
+
+        <p class="hero__sub" data-reveal style="--d:440ms">
+          SQ Market — это магазин, кофейня и готовая еда в одном зале.
+          Утром кофе, днём горячий обед, вечером продукты домой. Круглосуточно.
+        </p>
+
+        <div class="hero__cta" data-reveal style="--d:540ms">
+          <a class="btn btn--accent btn--lg" href="#places" data-magnetic>
+            <span class="btn__fill"></span>
+            <span class="btn__slot"><span>Найти магазин</span><span aria-hidden="true">Найти магазин</span></span>
+            <span class="btn__ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg>
+            </span>
+          </a>
+          <a class="btn btn--glass btn--lg" href="#inside" data-magnetic>
+            <span class="btn__fill"></span>
+            <span class="btn__slot"><span>Что внутри</span><span aria-hidden="true">Что внутри</span></span>
+          </a>
+        </div>
+
+        <div class="hero__stats" id="hero-stats" data-reveal style="--d:640ms"></div>
+      </div>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true"><i></i>листайте</div>
+  </section>
+
+  <!-- Бегущая строка -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track" style="--dur:38s">
+      <span class="ticker__item">Свежесваренный кофе</span>
+      <span class="ticker__item">Готовая еда</span>
+      <span class="ticker__item">Тёплая выпечка</span>
+      <span class="ticker__item">Круглосуточно</span>
+      <span class="ticker__item">Бесплатный Wi-Fi</span>
+      <span class="ticker__item">Намазхана</span>
+      <span class="ticker__item">Горячая вода</span>
+      <span class="ticker__item">Горячая еда</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       О ФОРМАТЕ
+       ============================================================ -->
+  <section id="about" class="section">
+    <div class="wrap about__grid">
+      <div class="about__sticky">
+        <p class="label" data-reveal>О формате</p>
+        <h2 data-split>Мы продаём не полки с продуктами</h2>
+        <p class="lead" data-reveal style="--d:180ms">
+          Мы продаём удобство городской жизни. SQ Market — это точка, куда человек
+          естественно заходит несколько раз в день: утром за кофе, днём за едой,
+          вечером за покупками домой.
+        </p>
+        <p class="lead" data-reveal style="--d:260ms">
+          Формат ориентируется на лучшие мировые convenience-концепции, но создаётся
+          как самостоятельный казахстанский бренд — с кириллицей на витрине,
+          намазханой внутри и понятной каждому логикой «зашёл и решил вопрос».
+        </p>
+        <div class="row values" id="values" data-reveal style="--d:340ms"></div>
+      </div>
+
+      <div data-reveal="right">
+        <p class="label label--green">Ассортимент 30 / 30 / 40</p>
+        <div class="mix" id="mix"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ЧТО ВНУТРИ
+       ============================================================ -->
+  <section id="inside" class="section">
+    <div class="wrap">
+      <div class="sec-head sec-head--split">
+        <div>
+          <p class="label" data-reveal>Что внутри</p>
+          <h2 data-split>Магазин, кофейня и кухня в одном зале</h2>
+        </div>
+        <p class="lead" data-reveal style="--d:200ms">
+          Двенадцать причин зайти. Нажмите на карточку — покажем подробнее и
+          как это выглядит внутри.
+        </p>
+      </div>
+      <div class="inside__grid" id="inside-grid" data-dots></div>
+      <div class="dots" hidden></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ТВОЙ ДЕНЬ С SQ
+       ============================================================ -->
+  <section id="day" class="section section--dark">
+    <div class="wrap">
+      <div class="sec-head sec-head--split">
+        <div>
+          <p class="label" data-reveal>Твой день</p>
+          <h2 data-split>Четыре повода зайти за сутки</h2>
+        </div>
+        <p class="lead" data-reveal style="--d:200ms">
+          Утро, обед, вечер и ночь — под каждый сценарий в зале есть своя зона.
+          Выберите время суток.
+        </p>
+      </div>
+
+      <div class="day__grid" data-tabs data-tabs-callback="sqDayTab">
+        <div class="day__list" id="day-list" data-reveal="left"></div>
+        <div class="day__stage" id="day-stage" data-reveal="right"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       АССОРТИМЕНТ
+       ============================================================ -->
+  <section id="menu" class="section">
+    <div class="wrap">
+      <div class="sec-head sec-head--split">
+        <div>
+          <p class="label" data-reveal>Ассортимент</p>
+          <h2 data-split>Что можно взять за пять минут</h2>
+        </div>
+        <p class="lead" data-reveal style="--d:200ms">
+          Витрина формата по категориям. Нажмите на позицию — откроется карточка
+          с описанием.
+        </p>
+      </div>
+
+      <div class="menu__desktop" data-tabs data-reveal>
+        <div class="tabs" id="menu-tabs"></div>
+        <div id="menu-panels"></div>
+      </div>
+
+      <!-- то же самое для телефона: категории свёрнуты, секция короткая -->
+      <div class="acc menu__mobile" id="menu-acc" data-reveal></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ГАЛЕРЕЯ
+       ============================================================ -->
+  <section id="gallery" class="section">
+    <div class="wrap">
+      <div class="sec-head sec-head--split">
+        <div>
+          <p class="label" data-reveal>Интерьер</p>
+          <h2 data-split>Так выглядит SQ Market внутри</h2>
+        </div>
+        <p class="lead" data-reveal style="--d:200ms">
+          Тёплое дерево, тёмные стеллажи, много света и широкие проходы.
+          Нажмите на кадр, чтобы посмотреть крупно.
+        </p>
+      </div>
+      <div class="gallery__grid" id="gallery-grid" data-dots></div>
+      <div class="dots" hidden></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ПЕРСОНАЖ
+       ============================================================ -->
+  <section class="section mascot">
+    <div class="wrap mascot__grid">
+      <div>
+        <p class="label" data-reveal style="color:#ffba00">Персонаж бренда</p>
+        <h2 data-split>Бумажный пакет, который знает магазин наизусть</h2>
+        <p class="lead" data-reveal style="--d:200ms">
+          Дружелюбный, простой и узнаваемый. Внутри пакета — фирменная морковка SQ.
+          Он оживает в роликах, ходит по залу, пьёт кофе, выбирает готовую еду
+          и объясняет навигацию лучше любой таблички.
+        </p>
+
+        <div class="mascot__uses">
+          <div class="mascot__use" data-reveal style="--d:260ms"><b>01</b><span>Навигация в зале и указатели зон</span></div>
+          <div class="mascot__use" data-reveal style="--d:320ms"><b>02</b><span>Ролики для соцсетей и наружная реклама</span></div>
+          <div class="mascot__use" data-reveal style="--d:380ms"><b>03</b><span>Упаковка, стаканы и фирменные пакеты</span></div>
+        </div>
+      </div>
+
+      <div class="mascot__art" data-reveal="scale">
+        <span class="mascot__ring mascot__ring--2" aria-hidden="true"></span>
+        <span class="mascot__ring" aria-hidden="true"></span>
+        <img src="assets/img/mascot.png" alt="Фирменный персонаж SQ Market — бумажный пакет" data-parallax="0.06" width="400" height="405">
+      </div>
+    </div>
+  </section>
+
+  <!-- Бегущая строка №2 -->
+  <div class="ticker ticker--orange" aria-hidden="true">
+    <div class="ticker__track" style="--dur:30s">
+      <span class="ticker__item">Всё необходимое рядом</span>
+      <span class="ticker__item">Всё необходимое в одном месте</span>
+      <span class="ticker__item">Работаем ночью</span>
+      <span class="ticker__item">Круглосуточно</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       КОМАНДА
+       ============================================================ -->
+  <section class="section section--tight">
+    <div class="wrap team__grid">
+      <div class="team__photo" data-reveal="left">
+        <img src="assets/img/uniform.jpg" alt="Форма сотрудников SQ Market" loading="lazy" width="642" height="307">
+      </div>
+      <div data-reveal="right">
+        <p class="label">Команда</p>
+        <h2 data-split>Единый стиль во всех точках</h2>
+        <p class="lead">
+          Тёмно-зелёная форма с оранжевым кантом, бейдж с именем, аккуратный вид.
+          Один стандарт для кассы, зала, кофейни и склада.
+        </p>
+        <ul class="team__list" style="margin-top:1.4rem">
+          <li class="team__item"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11"/></svg>Узнаваемость бренда в любой точке</li>
+          <li class="team__item"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11"/></svg>Комфорт сотрудников и свобода движения</li>
+          <li class="team__item"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11"/></svg>Чистота и профессиональный внешний вид</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       АДРЕСА + КАРТА 2ГИС
+       ============================================================ -->
+  <section id="places" class="section section--dark">
+    <div class="wrap">
+      <div class="sec-head sec-head--split">
+        <div>
+          <p class="label" data-reveal>Адреса</p>
+          <h2 data-split>Две точки в Астане</h2>
+        </div>
+        <p class="lead" data-reveal style="--d:200ms">
+          Нажмите на адрес — карта 2ГИС перелетит к нужному магазину.
+          Оттуда же можно сразу построить маршрут.
+        </p>
+      </div>
+
+      <div class="places__grid">
+        <div id="branches" data-reveal="left"></div>
+
+        <div class="map" id="map" data-reveal="right">
+          <div class="map__loader">Загружаем карту 2ГИС…</div>
+          <iframe id="map-frame" title="SQ Market на карте 2ГИС" loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+          <!-- Панель поверх виджета: свои ссылки вместо его собственных,
+               которые ведут на московский домен -->
+          <div class="map__bar">
+            <span class="map__tag"><span>Астана</span></span>
+            <div class="map__actions">
+            <a class="btn btn--accent btn--sm" data-map-route href="#" target="_blank" rel="noopener">
+              <span class="btn__fill"></span>
+              <span class="btn__slot"><span>Маршрут</span><span aria-hidden="true">Маршрут</span></span>
+            </a>
+            <a class="btn btn--glass btn--sm" data-map-open href="#" target="_blank" rel="noopener">
+              <span class="btn__fill"></span>
+              <span class="btn__slot"><span>Открыть в 2ГИС</span><span aria-hidden="true">Открыть в 2ГИС</span></span>
+            </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ВОПРОСЫ
+       ============================================================ -->
+  <section id="faq" class="section">
+    <div class="wrap about__grid">
+      <div class="about__sticky">
+        <p class="label" data-reveal>Вопросы</p>
+        <h2 data-split>Коротко о главном</h2>
+        <p class="lead" data-reveal style="--d:180ms">
+          Не нашли свой вопрос — напишите нам в WhatsApp, ответим быстрее,
+          чем сварится кофе.
+        </p>
+        <div class="row" style="margin-top:1.4rem" data-reveal style="--d:260ms">
+          <a class="btn btn--primary" href="#" data-wa target="_blank" rel="noopener" data-magnetic>
+            <span class="btn__fill"></span>
+            <span class="btn__slot"><span>Написать в WhatsApp</span><span aria-hidden="true">Написать в WhatsApp</span></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="acc" id="faq-list" data-reveal="right"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       КОНТАКТЫ
+       ============================================================ -->
+  <section id="contact" class="section">
+    <div class="wrap">
+      <div class="sec-head sec-head--split">
+        <div>
+          <p class="label" data-reveal>Контакты</p>
+          <h2 data-split>Напишите нам</h2>
+        </div>
+        <p class="lead" data-reveal style="--d:200ms">
+          Вопрос по магазину, предложение помещения или сотрудничество —
+          оставьте номер, мы перезвоним.
+        </p>
+      </div>
+
+      <div class="contact__grid">
+        <form class="contact__form" id="lead-form" novalidate data-reveal="left">
+          <div class="contact__row">
+            <div class="field">
+              <input id="f-name" name="name" type="text" placeholder=" " required autocomplete="name">
+              <label for="f-name">Как вас зовут</label>
+              <p class="field__err"></p>
+            </div>
+            <div class="field">
+              <input id="f-phone" name="phone" type="tel" placeholder=" " required autocomplete="tel">
+              <label for="f-phone">Телефон</label>
+              <p class="field__err"></p>
+            </div>
+          </div>
+          <div class="field">
+            <textarea id="f-msg" name="message" placeholder=" "></textarea>
+            <label for="f-msg">Сообщение</label>
+            <p class="field__err"></p>
+          </div>
+
+          <button class="btn btn--accent btn--lg" type="submit" data-magnetic>
+            <span class="btn__fill"></span>
+            <span class="btn__slot"><span>Отправить заявку</span><span aria-hidden="true">Отправить заявку</span></span>
+            <span class="btn__ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg>
+            </span>
+          </button>
+          <p class="faint" style="font-size:.78rem">
+            Нажимая кнопку, вы соглашаетесь на обработку контактных данных для обратной связи.
+          </p>
+        </form>
+
+        <div class="contact__info" id="contact-info" data-reveal="right"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================
+     ФУТЕР
+     ============================================================ -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__col">
+        <img src="assets/img/logo-wordmark.png" alt="SQ Market" width="200" height="40" style="margin-bottom:1rem">
+        <p class="muted" style="max-width:34ch">
+          Магазин у дома нового поколения: готовая еда, кофе, выпечка и продукты
+          в одном месте. Астана.
+        </p>
+        <div class="socials" id="socials" style="margin-top:1.2rem"></div>
+      </div>
+
+      <div class="footer__col">
+        <h4>Разделы</h4>
+        <ul id="footer-nav"></ul>
+      </div>
+
+      <div class="footer__col">
+        <h4>Адреса</h4>
+        <ul id="footer-addr"></ul>
+        <h4 style="margin-top:1.4rem">Связь</h4>
+        <a href="#" data-phone>+7 700 448 00 00</a>
+      </div>
+    </div>
+
+    <div class="footer__big" aria-hidden="true" data-fit>SQ MARKET</div>
+
+    <div class="footer__bottom">
+      <span>© <span id="year"></span> SQ Market. Астана, Казахстан.</span>
+      <span>Всё необходимое в одном месте</span>
+    </div>
+  </div>
+</footer>
+
+<button class="icon-btn to-top" type="button" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11.5 12 5l6 6.5"/></svg>
+</button>
+
+<!-- ============================================================
+     ВСПЛЫВАЮЩИЕ ОКНА
+     ============================================================ -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal__backdrop"></div>
+  <div class="modal__panel">
+    <button class="modal__close" type="button" aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>
+    </button>
+    <div class="modal__content"></div>
+  </div>
+</div>
+
+<div class="modal lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Галерея">
+  <div class="modal__backdrop"></div>
+  <div class="modal__panel">
+    <div class="lightbox__stage"><img alt=""></div>
+    <div class="lightbox__bar">
+      <span class="lightbox__caption"></span>
+      <span class="row">
+        <span class="lightbox__count"></span>
+        <button class="icon-btn" type="button" data-lb-prev aria-label="Предыдущий кадр">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6M11.5 6 5 12l6.5 6"/></svg>
+        </button>
+        <button class="icon-btn" type="button" data-lb-next aria-label="Следующий кадр">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg>
+        </button>
+        <button class="icon-btn" type="button" data-lb-close aria-label="Закрыть">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     СКРИПТЫ. Порядок важен.
+     data.js — контент · icons.js — иконки · core.js — ядро
+     ============================================================ -->
+<script src="assets/js/data.js?v=13"></script>
+<script src="assets/js/icons.js?v=13"></script>
+<script src="assets/js/core.js?v=13"></script>
+<script src="assets/js/ui.js?v=13"></script>
+<script src="assets/js/modal.js?v=13"></script>
+<script src="assets/js/nav.js?v=13"></script>
+<script src="assets/js/map.js?v=13"></script>
+<script src="assets/js/render.js?v=13"></script>
+<script src="assets/js/main.js?v=13"></script>
+</body>
+</html>

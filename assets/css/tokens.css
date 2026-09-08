@@ -1,0 +1,131 @@
+/* ============================================================
+   SQ MARKET — ДИЗАЙН-ТОКЕНЫ
+   Здесь живут ВСЕ цвета, шрифты, отступы и тайминги сайта.
+   Хотите поменять фирменный цвет или скруглления — меняйте тут,
+   и это подхватится на всём сайте. Больше нигде цвета не хардкодим.
+   ============================================================ */
+
+:root {
+  /* --- Фирменные цвета (из брендбука SQ MARKET) --- */
+  --brand-green: #0a6b3e;
+  --brand-green-deep: #064a2b;
+  --brand-green-soft: #128b4f;
+  --brand-orange: #ff8a00;
+  --brand-orange-warm: #ffba00;
+  --brand-black: #101211;
+  --brand-gray: #f2f2f2;
+  --brand-white: #ffffff;
+
+  /* Неоновый лайм — как подсветка в интерьере магазина. Используем точечно. */
+  --neon: #b9f227;
+
+  /* --- Семантические цвета: светлая тема (по умолчанию) --- */
+  --bg: #f7f5f0;             /* основной фон страницы (тёплый кремовый) */
+  --bg-elev: #ffffff;         /* карточки, поповеры */
+  --bg-sunk: #ecebe4;         /* «утопленные» блоки, разделители-полосы */
+  --ink: #14180f;             /* основной текст */
+  --ink-soft: #5c6156;        /* вторичный текст */
+  --ink-faint: #9aa093;       /* подписи, счётчики */
+  --line: rgba(20, 24, 15, 0.12);
+  --line-strong: rgba(20, 24, 15, 0.22);
+
+  --accent: var(--brand-orange);
+  --accent-ink: #ffffff;      /* текст на оранжевом */
+  --primary: var(--brand-green);
+  --primary-ink: #ffffff;     /* текст на зелёном */
+
+  /* Тёмные секции внутри светлой темы (герой, «день», карта, футер) */
+  --dark-bg: #0c1310;
+  --dark-bg-2: #0a1a12;
+  --dark-ink: #f4f3ec;
+  --dark-ink-soft: rgba(244, 243, 236, 0.66);
+  --dark-line: rgba(255, 255, 255, 0.14);
+
+  /* Стекло (liquid glass кнопки и навигация) */
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-line: rgba(255, 255, 255, 0.7);
+  --glass-shadow: 0 18px 40px -18px rgba(16, 18, 17, 0.4);
+
+  /* --- Типографика --- */
+  --font-display: "Unbounded", "Manrope", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --fs-hero: clamp(1.7rem, 8.2vw, 6rem);
+  --fs-h1: clamp(2.1rem, 5.4vw, 4.6rem);
+  --fs-h2: clamp(1.7rem, 3.6vw, 3.1rem);
+  --fs-h3: clamp(1.25rem, 2vw, 1.7rem);
+  --fs-lead: clamp(1.02rem, 1.35vw, 1.28rem);
+  --fs-body: clamp(0.98rem, 1.05vw, 1.06rem);
+  --fs-small: 0.86rem;
+  --fs-micro: 0.72rem;
+
+  --lh-tight: 0.98;
+  --lh-snug: 1.16;
+  --lh-body: 1.62;
+  --tracking-label: 0.16em;
+
+  /* --- Сетка и отступы --- */
+  --page-max: 1440px;
+  --page-pad: clamp(1.15rem, 4.2vw, 4.5rem);
+  --section-pad: clamp(4.5rem, 9vw, 9.5rem);
+  --gap: clamp(1rem, 1.8vw, 2rem);
+
+  /* --- Скругления --- */
+  --r-xs: 8px;
+  --r-sm: 14px;
+  --r-md: 22px;
+  --r-lg: 32px;
+  --r-xl: 44px;
+  --r-pill: 999px;
+
+  /* --- Тени --- */
+  --sh-sm: 0 2px 10px -4px rgba(16, 18, 17, 0.28);
+  --sh-md: 0 20px 45px -24px rgba(16, 18, 17, 0.42);
+  --sh-lg: 0 42px 90px -40px rgba(16, 18, 17, 0.52);
+  --sh-glow: 0 12px 40px -12px rgba(255, 138, 0, 0.55);
+
+  /* --- Тайминги и кривые движения --- */
+  --t-fast: 0.18s;
+  --t-base: 0.34s;
+  --t-slow: 0.66s;
+  --t-reveal: 1.05s;
+  --e-out: cubic-bezier(0.22, 1, 0.36, 1);       /* мягкий выход */
+  --e-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --e-back: cubic-bezier(0.34, 1.56, 0.64, 1);   /* с лёгким «перелётом» */
+
+  --z-cursor: 9999;
+  --z-preloader: 900;
+  --z-modal: 800;
+  --z-header: 700;
+}
+
+/* ============================================================
+   ТЁМНАЯ ТЕМА — переключается кнопкой-луной в шапке.
+   Меняем только семантические переменные, фирменные не трогаем.
+   ============================================================ */
+[data-theme="dark"] {
+  --bg: #0b100d;
+  --bg-elev: #131a15;
+  --bg-sunk: #0f1611;
+  --ink: #f2f1e9;
+  --ink-soft: rgba(242, 241, 233, 0.66);
+  --ink-faint: rgba(242, 241, 233, 0.42);
+  --line: rgba(255, 255, 255, 0.13);
+  --line-strong: rgba(255, 255, 255, 0.26);
+
+  --primary: #17a05c;
+  --primary-ink: #04150c;
+
+  --dark-bg: #070c09;
+  --dark-bg-2: #08120c;
+
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-line: rgba(255, 255, 255, 0.16);
+  --glass-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.8);
+
+  --sh-sm: 0 2px 10px -4px rgba(0, 0, 0, 0.6);
+  --sh-md: 0 20px 45px -24px rgba(0, 0, 0, 0.75);
+  --sh-lg: 0 42px 90px -40px rgba(0, 0, 0, 0.85);
+
+  color-scheme: dark;
+}

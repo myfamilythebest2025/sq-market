@@ -1,0 +1,421 @@
+/* ============================================================
+   SQ MARKET — ТЕЛЕФОН
+   ------------------------------------------------------------
+   Здесь собрано ВСЁ, что на телефоне работает иначе, чем на
+   десктопе. Файл подключается последним, поэтому переопределяет
+   остальные стили и его можно править, не боясь сломать десктоп.
+
+   Граница — 860 px. То же число стоит в core.js (SQCore.isMobile),
+   от него зависит поведение «Твоего дня» и ассортимента.
+   ============================================================ */
+
+@media (max-width: 860px) {
+
+  /* ----------------------------------------------------------
+     0. МЕНЬШЕ ДВИЖЕНИЯ
+     На телефоне блоки больше не заезжают слева и справа — из-за этого
+     страница «каталась» по горизонтали. Осталось короткое появление
+     снизу, параллакс и покачивания выключены.
+     ---------------------------------------------------------- */
+  [data-reveal],
+  [data-reveal="left"],
+  [data-reveal="right"],
+  [data-reveal="scale"] {
+    transform: translate3d(0, 14px, 0);
+    transition-duration: 0.55s;
+  }
+
+  .hero__mascot,
+  .mascot__art img { animation: none; }
+
+  .mascot__ring { animation-duration: 60s; }
+  .mascot__ring--2 { animation-duration: 90s; }
+
+  /* ----------------------------------------------------------
+     1. ВОЗДУХ. Главная претензия к прошлой версии — всё сжато.
+     Поля по краям, отступы секций и межстрочные шире.
+     ---------------------------------------------------------- */
+  :root {
+    --page-pad: 1.4rem;
+    --section-pad: 4.6rem;
+    --gap: 1.15rem;
+
+    --fs-h2: clamp(1.6rem, 7.2vw, 2.2rem);
+    --fs-h3: 1.12rem;
+    --fs-lead: 1rem;
+    --fs-body: 0.98rem;
+    --lh-body: 1.68;
+    --lh-snug: 1.18;
+
+    --r-md: 20px;
+    --r-lg: 26px;
+  }
+
+  .sec-head {
+    gap: 0.75rem;
+    margin-bottom: 2.1rem;
+  }
+
+  .sec-head--split { grid-template-columns: minmax(0, 1fr); }
+
+  .about__grid,
+  .day__grid,
+  .contact__grid,
+  .team__grid,
+  .mascot__grid,
+  .places__grid { gap: 2.4rem; }
+
+  /* Прилипающий столбец на телефоне не нужен — из-за него блоки наезжали */
+  .about__sticky { position: static; }
+
+  .lead { max-width: none; }
+
+  /* ----------------------------------------------------------
+     2. ШАПКА И МЕНЮ
+     ---------------------------------------------------------- */
+  .site-header { padding-block: 0.6rem; }
+  .site-header__inner { gap: 0.5rem; }
+  .brand img { height: 17px; }
+
+  .site-header__actions { gap: 0.4rem; }
+
+  .icon-btn { width: 42px; height: 42px; }
+
+  .mobile-nav {
+    align-content: start;
+    padding: 5.5rem var(--page-pad) 2.5rem;
+    overflow-y: auto;
+  }
+
+  .mobile-nav__links { display: grid; gap: 0.1rem; }
+
+  .mobile-nav__links a {
+    display: block;
+    font-size: clamp(1.7rem, 8.5vw, 2.4rem);
+    padding-block: 0.3em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mobile-nav__foot { margin-top: 1.8rem; }
+  .mobile-nav .btn__slot > span { white-space: nowrap; }
+
+  /* ----------------------------------------------------------
+     3. ГЛАВНЫЙ ЭКРАН
+     ---------------------------------------------------------- */
+  .hero {
+    min-height: auto;
+    padding-block: 7.5rem 8.5rem;   /* снизу место для персонажа */
+  }
+
+  .hero__kicker {
+    margin-bottom: 1.1rem;
+    line-height: 1.5;
+    text-align: left;
+  }
+
+  .hero__sub { max-width: none; }
+
+  .hero__cta { gap: 0.6rem; }
+  .hero__cta .btn { flex: 1 1 auto; justify-content: center; }
+
+  .hero__stats { grid-template-columns: minmax(0, 1fr); max-width: none; }
+  .hero__stat { padding: 0.85rem 1.1rem; }
+  .hero__stat b { font-size: 1.7rem; }
+
+  /* Персонаж стоит в правом нижнем углу первого экрана, ПОД плашкой
+     с цифрами — поэтому ничего не перекрывает. Место под него даёт
+     увеличенный нижний отступ героя. */
+  .hero__mascot {
+    width: 30vw;
+    max-width: 150px;
+    right: 4vw;
+    bottom: 0;
+    opacity: 1;
+  }
+
+  /* Подсказка «листайте» на телефоне лишняя — место дороже */
+  .scroll-cue { display: none; }
+
+  .ticker__item { font-size: 0.92rem; }
+
+  /* ----------------------------------------------------------
+     4. 30 / 30 / 40
+     ---------------------------------------------------------- */
+  .mix__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.35rem;
+    padding-block: 1.1rem;
+  }
+
+  .mix__num { min-width: 0; font-size: 1.8rem; }
+  .mix__bar { margin-top: 0.9rem; }
+
+  .values { gap: 0.45rem; margin-top: 1.4rem; }
+  .chip { padding: 0.5em 0.9em; font-size: 0.8rem; }
+
+  /* ----------------------------------------------------------
+     5. «ЧТО ВНУТРИ» И «ИНТЕРЬЕР» — КОМПАКТНЫЕ СЕТКИ
+     Горизонтальных каруселей здесь больше нет: при вертикальном
+     свайпе они ловили палец и уезжали вбок. Вместо них плотные
+     сетки, а подробности открываются нажатием.
+     ---------------------------------------------------------- */
+  .inside__grid,
+  .gallery__grid {
+    display: grid;
+    grid-auto-flow: row;
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  /* Точки-страницы не нужны — прокрутки нет */
+  .dots { display: none !important; }
+
+  /* Что внутри: две колонки, только иконка и название.
+     Описание и фото — во всплывающем окне по нажатию. */
+  .inside__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .inside__grid .card {
+    padding: 1.1rem 1rem 1.2rem;
+    gap: 0.7rem;
+    grid-template-rows: auto 1fr auto;
+    min-height: 0;
+  }
+
+  .card__ico { width: 40px; height: 40px; border-radius: 12px; }
+  .card__ico svg { width: 21px; height: 21px; }
+  .card__title {
+    font-size: 0.86rem;
+    line-height: 1.28;
+    letter-spacing: -0.01em;
+    overflow-wrap: break-word;   /* «Микроволновки» не должно упираться в край */
+  }
+  .card__text { display: none; }
+  .kz { font-size: 0.68rem; margin-top: 0.25rem; }
+
+  .card__more {
+    opacity: 1;
+    transform: none;
+    font-size: 0;
+    padding-top: 0;
+  }
+
+  .card__more svg { width: 16px; height: 16px; }
+
+  /* Интерьер: сетка квадратных превью, нажатие открывает крупный кадр */
+  .gallery__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .shot,
+  .shot--wide,
+  .shot--tall {
+    grid-column: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+  }
+
+  .shot__cap,
+  .shot__zoom { display: none; }
+  .shot__veil { opacity: 0; }
+
+  /* ----------------------------------------------------------
+     6. «ТВОЙ ДЕНЬ» — большого кадра нет, нажатие открывает окно
+     ---------------------------------------------------------- */
+  .day__stage { display: none; }
+
+  .day__list { gap: 0.6rem; }
+
+  .day__btn {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 0.85rem;
+    padding: 1.15rem 1.1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+  }
+
+  .day__btn::after {
+    content: "";
+    align-self: center;
+    width: 9px;
+    height: 9px;
+    border-right: 2px solid var(--brand-orange);
+    border-bottom: 2px solid var(--brand-orange);
+    transform: rotate(-45deg);
+  }
+
+  .day__btn.is-active { background: rgba(255, 255, 255, 0.09); }
+  .day__time { width: auto; }
+  .day__text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ----------------------------------------------------------
+     7. АССОРТИМЕНТ — аккордеон вместо длинного списка
+     ---------------------------------------------------------- */
+  .menu__desktop { display: none; }
+  .menu__mobile { display: block; }
+
+  .menu__mobile .acc__head { font-size: 1.05rem; padding-block: 1.15rem; }
+  .menu__mobile .acc__head:hover { padding-left: 0; }
+
+  .menu__mobile .dish {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding-block: 0.85rem;
+    border-bottom-style: solid;
+    border-color: var(--line);
+  }
+
+  .menu__mobile .dish:hover { padding-left: 0; }
+  .menu__mobile .dish:last-child { border-bottom: 0; }
+  .dish__name { font-size: 0.99rem; }
+  .dish__desc { font-size: 0.83rem; }
+
+  /* ----------------------------------------------------------
+     8. ПЕРСОНАЖ И КОМАНДА
+     ---------------------------------------------------------- */
+  .mascot__grid { gap: 1.6rem; }
+  .mascot__art img { width: 68%; }
+  .mascot__ring { width: 78%; }
+  .mascot__ring--2 { width: 94%; }
+  .mascot__use { padding: 0.8rem 1rem; font-size: 0.9rem; }
+
+  .team__grid { gap: 1.8rem; }
+
+  /* ----------------------------------------------------------
+     9. АДРЕСА И КАРТА
+     ---------------------------------------------------------- */
+  .branch { padding: 1.15rem; }
+  .branch + .branch { margin-top: 0.6rem; }
+
+  .branch__top {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.5rem 0.7rem;
+  }
+
+  .branch__addr { font-size: 1rem; }
+
+  .branch__status {
+    grid-column: 1 / -1;
+    margin-left: 0;
+    justify-self: start;
+  }
+
+  .branch__links { gap: 0.45rem; }
+  .branch__links .chip { flex: 1 1 auto; justify-content: center; }
+
+  /* Карта не висит в секции постоянно: адрес открывает её во всплывающем окне */
+  .map { display: none; }
+
+  .branch { cursor: pointer; }
+
+  .branch__main::after {
+    content: "Показать на карте";
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    margin-top: 0.15rem;
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand-orange);
+  }
+
+  .map__bar { padding: 8px 10px; gap: 0.4rem; }
+  .map__actions { gap: 0.35rem; }
+  .map__actions .btn { padding: 0.7em 0.95em; font-size: 0.72rem; }
+
+  /* Подпись адреса на карте на телефоне не нужна — он есть в карточке выше */
+  .map__tag { display: none; }
+
+  /* ----------------------------------------------------------
+     10. ВОПРОСЫ, ФОРМА, ФУТЕР
+     ---------------------------------------------------------- */
+  .acc__head { font-size: 1rem; gap: 0.7rem; }
+  .acc__head:hover { padding-left: 0; }
+  .acc__sign { width: 30px; height: 30px; }
+
+  .field input,
+  .field textarea { padding: 1.45rem 1rem 0.7rem; }
+
+  .info-line { padding: 1rem; }
+  .info-line:hover { transform: none; }
+
+  .site-footer { padding-top: 3rem; }
+
+  .footer__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.6rem 1.2rem;
+  }
+
+  .footer__col:first-child { grid-column: 1 / -1; }
+  .footer__col:first-child p { max-width: none; }
+  .footer__col a { padding-block: 0.28rem; font-size: 0.92rem; }
+  .footer__col a:hover { transform: none; }
+
+  .footer__big { margin-top: 2rem; }
+
+  .footer__bottom {
+    margin-top: 1.6rem;
+    gap: 0.5rem;
+    font-size: 0.74rem;
+  }
+
+  .to-top { width: 44px; height: 44px; }
+
+  /* ----------------------------------------------------------
+     11. ОКНА НА ТЕЛЕФОНЕ — во весь экран снизу
+     ---------------------------------------------------------- */
+  .modal { padding: 0; align-items: end; }
+
+  .modal__panel {
+    width: 100%;
+    max-height: 92svh;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    transform: translate3d(0, 100%, 0);
+  }
+
+  .modal.is-open .modal__panel { transform: none; }
+
+  .modal__media { aspect-ratio: 16 / 11; }
+  .modal__body { padding: 1.4rem 1.3rem 2rem; gap: 0.8rem; }
+  .modal__title { font-size: 1.4rem; }
+  .modal__close { top: 10px; right: 10px; width: 40px; height: 40px; }
+
+  .lightbox { padding: 0.8rem; align-items: center; }
+  .lightbox .modal__panel {
+    border-radius: 0;
+    background: transparent;
+    transform: none;
+    max-height: none;
+  }
+  .lightbox__stage img { max-height: 62svh; }
+  .lightbox__bar { flex-wrap: wrap; justify-content: center; }
+}
+
+/* На узком экране кнопки главного экрана встают друг под друга */
+@media (max-width: 520px) {
+  .hero__cta .btn { flex: 1 1 100%; }
+}
+
+/* Аккордеон ассортимента — только для телефона */
+@media (min-width: 861px) {
+  .menu__mobile { display: none; }
+}
+
+/* Совсем узкие экраны */
+@media (max-width: 380px) {
+  .inside__grid,
+  .gallery__grid { grid-auto-columns: 84%; }
+  .footer__grid { grid-template-columns: minmax(0, 1fr); }
+}

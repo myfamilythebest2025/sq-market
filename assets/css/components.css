@@ -655,13 +655,34 @@
 .modal__map iframe {
   position: absolute;
   inset: 0;
-  width: 139%;
-  height: 139%;
+  width: 125%;
+  height: 125%;
   border: 0;
-  transform: scale(0.72);
+  transform: scale(0.8);
   transform-origin: top left;
   pointer-events: none;
 }
+
+.modal__live {
+  position: absolute;
+  inset: 0;
+}
+
+.modal__maploader {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  background: var(--bg-sunk);
+  color: var(--ink-faint);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  transition: opacity 0.4s var(--e-out), visibility 0.4s;
+}
+
+.modal__map.is-ready .modal__maploader { opacity: 0; visibility: hidden; }
 
 /* Полоса с адресом поверх карты. Она же закрывает служебную плашку
    виджета «Посмотреть на карте Москвы». */

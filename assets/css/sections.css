@@ -962,6 +962,14 @@ body.nav-open .mobile-nav__foot { opacity: 1; }
   box-shadow: var(--sh-md);
 }
 
+/* Живая карта MapGL — на неё, в отличие от виджета, клики нужны */
+.map__live {
+  position: absolute;
+  inset: 0;
+}
+
+.map.is-live .map__bar { background: rgba(8, 15, 11, 0.78); }
+
 .map iframe {
   width: 100%;
   height: 100%;

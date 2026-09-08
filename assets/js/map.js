@@ -1,38 +1,31 @@
 /* ============================================================
    SQ MARKET — КАРТА 2ГИС
    ------------------------------------------------------------
-   Используется официальный виджет 2ГИС (без ключа и регистрации):
-   он отдаёт настоящие тайлы 2ГИС и карточку организации с адресом,
-   телефоном и способами оплаты.
+   Работает в двух режимах.
 
-   ВАЖНО про клики. У виджета осталась старая начинка: внутренние
-   ссылки он собирает как 2gis.ru/moscow/... и открывает пустую
-   страницу, а в углу пишет «Посмотреть на карте Москвы». Поэтому
-   сам виджет мы делаем некликабельным (pointer-events: none),
-   а сверху кладём свои кнопки с правильными адресами 2gis.kz.
-   Заодно это убирает «залипание» страницы на карте при прокрутке
-   пальцем на телефоне.
+   1) ЖИВАЯ КАРТА — если в data.js заполнен config.mapApiKey.
+      Официальный MapGL 2ГИС: настоящая карта, которую можно двигать
+      и приближать, с нашими фирменными метками. Все ссылки наши,
+      ничего чужого. Ключ бесплатный: https://dev.2gis.ru/order/
+
+   2) БЕЗ КЛЮЧА — виджет 2ГИС в рамке: работает сразу, настраивать
+      ничего не надо. У виджета осталась старая начинка: свои ссылки
+      он собирает на московский домен и открывает пустую страницу,
+      поэтому кликов ему не даём, а сверху кладём свою панель
+      с правильными кнопками.
 
    Как добавить точку: допишите её в SQ.branches в data.js —
    нужны firmId (из ссылки 2gis.kz/astana/firm/<ID>), lat и lon.
    ============================================================ */
 
 window.SQMap = (function () {
-  const { $, $$, on, esc } = window.SQCore;
+  const { $, $$, on } = window.SQCore;
 
   const CITY = "astana";   // город в адресах 2ГИС: astana, almaty, shymkent…
-  const ZOOM = 17;
+  const ZOOM = 16.5;
 
-  /* Ссылка на виджет 2ГИС для одного филиала */
-  function widgetSrc(b) {
-    const options = {
-      pos: { lat: b.lat, lon: b.lon, zoom: ZOOM },
-      opt: { city: CITY },
-      org: String(b.firmId || ""),
-    };
-    return "https://widgets.2gis.com/widget?type=firmsonmap&options=" +
-      encodeURIComponent(JSON.stringify(options));
-  }
+  const key = () => String((window.SQ.config && window.SQ.config.mapApiKey) || "").trim();
+  const branches = () => window.SQ.branches;
 
   /* ------------------------------------------------------------
      ССЫЛКИ НА МАРШРУТ
@@ -41,21 +34,34 @@ window.SQMap = (function () {
      Пустая точка А записывается как ведущий "|" — тогда 2ГИС сам
      спросит «Моё местоположение».
      ------------------------------------------------------------ */
-  const point = (lon, lat, id) =>
-    `${lon},${lat}` + (id ? `;${id}` : "");
+  const point = (lon, lat, id) => `${lon},${lat}` + (id ? `;${id}` : "");
 
-  /* Маршрут без известного положения клиента: 2ГИС предложит определить его сам */
   function routeUrl(b) {
     return `https://2gis.kz/${CITY}/directions/points/` +
       encodeURIComponent(`|${point(b.lon, b.lat, b.firmId)}`);
   }
 
-  /* Готовый маршрут «от клиента до магазина» */
   function routeFromUrl(from, b) {
     return `https://2gis.kz/${CITY}/directions/points/` +
       encodeURIComponent(
         `${point(from.lon.toFixed(6), from.lat.toFixed(6))}|${point(b.lon, b.lat, b.firmId)}`
       );
+  }
+
+  /* Правильная ссылка на карточку филиала */
+  function cardUrl(b) {
+    return b.link || `https://2gis.kz/${CITY}/firm/${b.firmId}`;
+  }
+
+  /* Ссылка на виджет 2ГИС (режим без ключа) */
+  function widgetSrc(b) {
+    const options = {
+      pos: { lat: b.lat, lon: b.lon, zoom: 17 },
+      opt: { city: CITY },
+      org: String(b.firmId || ""),
+    };
+    return "https://widgets.2gis.com/widget?type=firmsonmap&options=" +
+      encodeURIComponent(JSON.stringify(options));
   }
 
   /* ------------------------------------------------------------
@@ -96,42 +102,128 @@ window.SQMap = (function () {
     setTimeout(() => finish(routeUrl(b)), 7500);
   }
 
-  /* Правильная ссылка на карточку филиала */
-  function cardUrl(b) {
-    return b.link || `https://2gis.kz/${CITY}/firm/${b.firmId}`;
+  /* ============================================================
+     ЖИВАЯ КАРТА (MapGL)
+     ============================================================ */
+  let sdk = null;
+
+  function loadSdk() {
+    if (sdk) return sdk;
+    sdk = new Promise((resolve, reject) => {
+      if (window.mapgl) return resolve(window.mapgl);
+      const el = document.createElement("script");
+      el.src = "https://mapgl.2gis.com/api/js/v1";
+      el.async = true;
+      el.onload = () => (window.mapgl ? resolve(window.mapgl) : reject(new Error("нет mapgl")));
+      el.onerror = () => reject(new Error("MapGL не загрузился"));
+      document.head.appendChild(el);
+    });
+    return sdk;
   }
+
+  /* Фирменная метка: капля с белым кружком. Активная — оранжевая. */
+  function pin(active) {
+    const fill = active ? "#ff8a00" : "#0a6b3e";
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="46" height="60" viewBox="0 0 46 60">' +
+      '<path d="M23 58C23 58 42 35 42 22.5C42 11.2 33.5 2 23 2S4 11.2 4 22.5C4 35 23 58 23 58Z" ' +
+      `fill="${fill}" stroke="#ffffff" stroke-width="3"/>` +
+      '<circle cx="23" cy="22" r="7" fill="#ffffff"/></svg>';
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+
+  const ICON = (active) => ({ icon: pin(active), size: [46, 60], anchor: [23, 58] });
+
+  /* Создаёт живую карту в контейнере. onPick — что делать при клике по метке. */
+  async function mountLive(box, index, onPick) {
+    const mapgl = await loadSdk();
+    const list = branches();
+    const b = list[index] || list[0];
+
+    const map = new mapgl.Map(box, {
+      center: [b.lon, b.lat],
+      zoom: ZOOM,
+      key: key(),
+      zoomControl: "bottomRight",
+    });
+
+    /* Ждём, пока карта реально отрисуется. Если ключ неверный или
+       исчерпан лимит, события не будет — тогда бросаем ошибку и
+       вызывающий код вернёт виджет, а не оставит пустой прямоугольник. */
+    await new Promise((resolve, reject) => {
+      let settled = false;
+      const ok = () => { if (!settled) { settled = true; resolve(); } };
+      map.on("idle", ok);
+      map.on("styleload", ok);
+      setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        try { map.destroy(); } catch (e) { /* уже уничтожена */ }
+        reject(new Error("карта не отрисовалась — проверьте ключ 2ГИС"));
+      }, 8000);
+    });
+
+    /* При неверном ключе 2ГИС рисует поверх карты свою надпись
+       «Your MapGL key is invalid». Ловим её и возвращаем виджет —
+       посетитель не должен видеть служебных сообщений. */
+    await new Promise((r) => setTimeout(r, 900));
+    if (/key is invalid|invalid key/i.test(box.textContent || "")) {
+      try { map.destroy(); } catch (e) { /* уже уничтожена */ }
+      throw new Error("ключ MapGL не принят");
+    }
+
+    const markers = list.map((br, i) => {
+      const m = new mapgl.Marker(map, { coordinates: [br.lon, br.lat], ...ICON(i === index) });
+      m.on("click", () => onPick && onPick(i));
+      return m;
+    });
+
+    return {
+      map,
+      show(i) {
+        const t = list[i];
+        if (!t) return;
+        markers.forEach((m, k) => m.setIcon(ICON(k === i)));
+        map.setCenter([t.lon, t.lat], { animate: true, duration: 700 });
+      },
+      destroy() { try { map.destroy(); } catch (e) { /* уже уничтожена */ } },
+    };
+  }
+
+  /* ============================================================
+     СЕКЦИЯ «АДРЕСА»
+     ============================================================ */
+  let live = null;
+  let current = 0;
 
   function init() {
     const wrap = $("#map");
-    const frame = $("#map-frame");
     const list = $("#branches");
-    if (!wrap || !frame) return;
+    if (!wrap) return;
 
-    const branches = window.SQ.branches;
-    let current = 0;
-
-    const showBranch = (i) => {
-      const b = branches[i];
+    const setLinks = (i) => {
+      const b = branches()[i];
       if (!b) return;
       current = i;
-      wrap.classList.remove("is-ready");
-      frame.src = widgetSrc(b);
-
-      $$("[data-branch]", list).forEach((el, k) => el.classList.toggle("is-active", k === i));
-
+      if (list) $$("[data-branch]", list).forEach((el, k) => el.classList.toggle("is-active", k === i));
       const tag = $(".map__tag span", wrap);
       if (tag) tag.textContent = b.address;
-
       const openLink = $("[data-map-open]", wrap);
       if (openLink) openLink.href = cardUrl(b);
       const routeLink = $("[data-map-route]", wrap);
-      if (routeLink) {
-        routeLink.href = routeUrl(b);
-        routeLink.dataset.route = i;
-      }
+      if (routeLink) { routeLink.href = routeUrl(b); routeLink.dataset.route = i; }
     };
 
-    on(frame, "load", () => wrap.classList.add("is-ready"));
+    const showBranch = (i) => {
+      setLinks(i);
+      if (live) return live.show(i);
+      const frame = $("#map-frame");
+      if (frame) { wrap.classList.remove("is-ready"); frame.src = widgetSrc(branches()[i]); }
+    };
+
+    const bindFrame = (frame) => on(frame, "load", () => wrap.classList.add("is-ready"));
+    const startFrame = $("#map-frame");
+    if (startFrame) bindFrame(startFrame);
 
     if (list) {
       on(list, "click", (e) => {
@@ -140,12 +232,12 @@ window.SQMap = (function () {
         if (!item) return;
         const i = +item.dataset.branch;
         // На телефоне карты рядом нет — открываем её во всплывающем окне
-        if (window.SQCore.isMobile()) window.SQModal.openBranch(branches[i], i);
+        if (window.SQCore.isMobile()) window.SQModal.openBranch(branches()[i], i);
         else showBranch(i);
       });
     }
 
-    /* Все кнопки «Маршрут» на странице — и в карточках, и над картой.
+    /* Все кнопки «Маршрут» — и в карточках, и над картой.
 
        На телефоне ничего не перехватываем: это обычная ссылка на 2gis.kz,
        и телефон сам открывает её в приложении 2ГИС, если оно установлено
@@ -159,21 +251,56 @@ window.SQMap = (function () {
       if (!el) return;
       if (window.SQCore.isMobile()) return;      // пусть отработает обычная ссылка
       e.preventDefault();
-      const b = branches[+el.dataset.route] || branches[current];
+      const b = branches()[+el.dataset.route] || branches()[current];
       if (b) openRoute(b);
     });
 
-    // карта грузится только когда секция появилась на экране — так страница открывается быстрее
+    // карта грузится, только когда секция появилась на экране
     const io = new IntersectionObserver(
       (entries) => {
-        if (!entries.some((e) => e.isIntersecting)) return;
-        showBranch(0);
+        if (!entries.some((x) => x.isIntersecting)) return;
         io.disconnect();
+        start();
       },
       { rootMargin: "300px" }
     );
     io.observe(wrap);
+
+    function start() {
+      setLinks(0);
+
+      if (!key()) {                        // ключа нет — показываем виджет
+        const frame = $("#map-frame");
+        if (frame) frame.src = widgetSrc(branches()[0]);
+        return;
+      }
+
+      const box = document.createElement("div");
+      box.className = "map__live";
+      wrap.insertBefore(box, wrap.firstChild);
+      const frame = $("#map-frame");
+      if (frame) frame.remove();
+
+      mountLive(box, 0, (i) => showBranch(i))
+        .then((inst) => {
+          live = inst;
+          wrap.classList.add("is-ready", "is-live");
+        })
+        .catch(() => {                     // ключ не подошёл — возвращаем виджет
+          box.remove();
+          const f = document.createElement("iframe");
+          f.id = "map-frame";
+          f.title = "SQ Market на карте 2ГИС";
+          f.referrerPolicy = "no-referrer-when-downgrade";
+          bindFrame(f);
+          f.src = widgetSrc(branches()[0]);
+          wrap.insertBefore(f, wrap.firstChild);
+        });
+    }
   }
 
-  return { init, routeUrl, routeFromUrl, cardUrl, widgetSrc, openRoute };
+  return {
+    init, routeUrl, routeFromUrl, cardUrl, widgetSrc, openRoute, mountLive,
+    hasKey: () => !!key(),
+  };
 })();

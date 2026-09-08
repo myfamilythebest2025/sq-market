@@ -13,6 +13,7 @@ html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 
@@ -27,7 +28,12 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
-  overscroll-behavior-x: none;   /* чтобы страница не «отъезжала» вбок при свайпе каруселей */
+  overscroll-behavior-x: none;
+
+  /* Главное средство против «болтанки» вбок на iPhone: браузеру прямо
+     сказано, что горизонтальные жесты на странице — не прокрутка.
+     pinch-zoom оставляем, чтобы страницу можно было увеличить пальцами. */
+  touch-action: pan-y pinch-zoom;
   transition: background var(--t-base) var(--e-out), color var(--t-base) var(--e-out);
 }
 

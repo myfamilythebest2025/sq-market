@@ -95,8 +95,7 @@ window.SQModal = (function () {
     const M = window.SQMap;
     show(`
       <div class="modal__map">
-        <iframe src="${esc(M.widgetSrc(b))}" title="${esc(b.address)} на карте 2ГИС"
-                loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <span class="modal__maploader">Загружаем карту 2ГИС…</span>
         <span class="modal__maptag">${esc(b.address)}</span>
       </div>
       <div class="modal__body">
@@ -118,6 +117,30 @@ window.SQModal = (function () {
         </div>
       </div>
     `);
+
+    // Карту вставляем уже после того, как окно на экране: живую, если есть
+    // ключ 2ГИС, иначе виджет. Ленивую загрузку не ставим — окно создаётся
+    // за краем экрана, и браузер может так и не начать грузить кадр.
+    const box = $(".modal__map", modal);
+    const ready = () => box.classList.add("is-ready");
+
+    if (M.hasKey()) {
+      const live = document.createElement("div");
+      live.className = "modal__live";
+      box.appendChild(live);
+      M.mountLive(live, i).then(ready).catch(() => { live.remove(); frame(); });
+    } else {
+      frame();
+    }
+
+    function frame() {
+      const f = document.createElement("iframe");
+      f.title = b.address + " на карте 2ГИС";
+      f.referrerPolicy = "no-referrer-when-downgrade";
+      f.addEventListener("load", ready);
+      f.src = M.widgetSrc(b);
+      box.appendChild(f);
+    }
   }
 
   /* ---------- Позиция ассортимента ---------- */

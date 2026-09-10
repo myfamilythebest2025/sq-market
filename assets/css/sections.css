@@ -1032,6 +1032,40 @@ body.nav-open .mobile-nav__foot { opacity: 1; }
 
 .map.is-ready .map__loader { opacity: 0; visibility: hidden; }
 
+/* Заглушка для точки, которой ещё нет в справочнике 2ГИС */
+.map__soon {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: none;
+  place-content: center;
+  gap: 0.5rem;
+  padding: clamp(1.4rem, 4vw, 3rem);
+  text-align: center;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 138, 0, 0.14), transparent 60%),
+    var(--dark-bg-2);
+}
+
+.map.is-soon .map__soon,
+.modal__map.is-soon .map__soon { display: grid; }
+
+.map__soon b {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.9vw, 1.25rem);
+  color: #fff;
+}
+
+.map__soon span {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.66);
+  max-width: 40ch;
+  margin-inline: auto;
+}
+
+.map.is-soon iframe,
+.map.is-soon .map__live { display: none; }
+
 .map__tag {
   display: inline-flex;
   align-items: center;

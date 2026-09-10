@@ -36,15 +36,18 @@ window.SQMap = (function () {
      ------------------------------------------------------------ */
   const point = (lon, lat, id) => `${lon},${lat}` + (id ? `;${id}` : "");
 
+  /* Что показывать 2ГИС для точки: карточку филиала, а пока её нет — здание */
+  const objectId = (b) => b.firmId || b.geoId || "";
+
   function routeUrl(b) {
     return `https://2gis.kz/${CITY}/directions/points/` +
-      encodeURIComponent(`|${point(b.lon, b.lat, b.firmId)}`);
+      encodeURIComponent(`|${point(b.lon, b.lat, objectId(b))}`);
   }
 
   function routeFromUrl(from, b) {
     return `https://2gis.kz/${CITY}/directions/points/` +
       encodeURIComponent(
-        `${point(from.lon.toFixed(6), from.lat.toFixed(6))}|${point(b.lon, b.lat, b.firmId)}`
+        `${point(from.lon.toFixed(6), from.lat.toFixed(6))}|${point(b.lon, b.lat, objectId(b))}`
       );
   }
 
@@ -53,8 +56,15 @@ window.SQMap = (function () {
      go.2gis.com тоже работает, но идёт через лишнюю переадресацию,
      поэтому оставляем её только как запасной вариант. */
   function cardUrl(b) {
-    return b.firmId ? `https://2gis.kz/${CITY}/firm/${b.firmId}` : (b.link || "");
+    if (b.firmId) return `https://2gis.kz/${CITY}/firm/${b.firmId}`;
+    if (b.geoId) return `https://2gis.kz/${CITY}/geo/${b.geoId}`;
+    return b.link || "";
   }
+
+  /* Виджет 2ГИС умеет показывать только организацию. Если карточки филиала
+     ещё нет, встроенной карты не будет — вместо неё показываем табличку
+     с адресом и кнопками. Появится firmId — карта включится сама. */
+  const hasWidget = (b) => !!b.firmId;
 
   /* Ссылка на виджет 2ГИС (режим без ключа) */
   function widgetSrc(b) {
@@ -248,8 +258,13 @@ window.SQMap = (function () {
     const showBranch = (i) => {
       setLinks(i);
       if (live) return live.show(i);
+
+      const b = branches()[i];
       const frame = $("#map-frame");
-      if (frame) { wrap.classList.remove("is-ready"); frame.src = widgetSrc(branches()[i]); }
+      // у точки ещё нет карточки в 2ГИС — карту показать нечем
+      wrap.classList.toggle("is-soon", !hasWidget(b));
+      if (!hasWidget(b)) { wrap.classList.add("is-ready"); return; }
+      if (frame) { wrap.classList.remove("is-ready"); frame.src = widgetSrc(b); }
     };
 
     const bindFrame = (frame) => on(frame, "load", () => wrap.classList.add("is-ready"));
@@ -301,8 +316,7 @@ window.SQMap = (function () {
       setLinks(0);
 
       if (!key()) {                        // ключа нет — показываем виджет
-        const frame = $("#map-frame");
-        if (frame) frame.src = widgetSrc(branches()[0]);
+        showBranch(0);
         return;
       }
 
@@ -332,6 +346,6 @@ window.SQMap = (function () {
 
   return {
     init, routeUrl, routeFromUrl, cardUrl, widgetSrc, openRoute, mountLive,
-    hasKey: () => !!key(),
+    hasWidget, hasKey: () => !!key(),
   };
 })();

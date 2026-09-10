@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SQ MARKET — магазин у дома нового поколения в Астане</title>
-<meta name="description" content="SQ Market — современный convenience market в Астане: готовая еда, свежесваренный кофе, выпечка, продукты и зона со столиками. Круглосуточно, Wi-Fi, намазхана. Две точки в городе.">
+<meta name="description" content="SQ Market — современный convenience market в Астане: готовая еда, свежесваренный кофе, выпечка, продукты и зона со столиками. Круглосуточно, Wi-Fi, намазхана. Три точки в городе.">
 <meta name="theme-color" content="#0a6b3e">
 
 <meta property="og:type" content="website">
@@ -20,11 +20,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="assets/css/tokens.css?v=18">
-<link rel="stylesheet" href="assets/css/base.css?v=18">
-<link rel="stylesheet" href="assets/css/components.css?v=18">
-<link rel="stylesheet" href="assets/css/sections.css?v=18">
-<link rel="stylesheet" href="assets/css/mobile.css?v=18">
+<link rel="stylesheet" href="assets/css/tokens.css?v=20">
+<link rel="stylesheet" href="assets/css/base.css?v=20">
+<link rel="stylesheet" href="assets/css/components.css?v=20">
+<link rel="stylesheet" href="assets/css/sections.css?v=20">
+<link rel="stylesheet" href="assets/css/mobile.css?v=20">
 </head>
 
 <body>
@@ -56,7 +56,7 @@
     </nav>
 
     <div class="site-header__actions">
-      <a class="header-phone" href="#" data-phone>+7 700 448 00 00</a>
+      <a class="header-phone" href="#" data-phone>+7 702 843 98 09</a>
       <button class="icon-btn" type="button" data-theme-toggle aria-label="Сменить тему"></button>
       <a class="btn btn--accent btn--sm" href="#places" data-magnetic>
         <span class="btn__fill"></span>
@@ -79,7 +79,7 @@
     </a>
     <a class="btn btn--ghost btn--block" href="#" data-phone>
       <span class="btn__fill"></span>
-      <span class="btn__slot"><span>+7 700 448 00 00</span><span aria-hidden="true">+7 700 448 00 00</span></span>
+      <span class="btn__slot"><span>+7 702 843 98 09</span><span aria-hidden="true">+7 702 843 98 09</span></span>
     </a>
   </div>
 </div>
@@ -309,7 +309,7 @@
   <section class="section section--tight">
     <div class="wrap team__grid">
       <div class="team__photo" data-reveal="left">
-        <img src="assets/img/uniform.jpg?v=18" alt="Форма сотрудников SQ Market" loading="lazy" width="656" height="372">
+        <img src="assets/img/uniform.jpg?v=20" alt="Форма сотрудников SQ Market" loading="lazy" width="656" height="372">
       </div>
       <div data-reveal="right">
         <p class="label">Команда</p>
@@ -335,7 +335,7 @@
       <div class="sec-head sec-head--split">
         <div>
           <p class="label" data-reveal>Адреса</p>
-          <h2 data-split>Две точки в Астане</h2>
+          <h2 data-split>Три точки в Астане</h2>
         </div>
         <p class="lead" data-reveal style="--d:200ms">
           Нажмите на адрес — карта 2ГИС перелетит к нужному магазину.
@@ -348,6 +348,13 @@
 
         <div class="map" id="map" data-reveal="right">
           <div class="map__loader">Загружаем карту 2ГИС…</div>
+
+          <!-- Показывается, если у точки ещё нет карточки в 2ГИС -->
+          <div class="map__soon">
+            <b>Точка ещё не появилась на карте 2ГИС</b>
+            <span>Магазин готовится к открытию. Маршрут и адрес уже работают —
+            кнопки на панели выше.</span>
+          </div>
           <iframe id="map-frame" title="SQ Market на карте 2ГИС"
                   referrerpolicy="no-referrer-when-downgrade"></iframe>
 
@@ -474,7 +481,7 @@
         <h4>Адреса</h4>
         <ul id="footer-addr"></ul>
         <h4 style="margin-top:1.4rem">Связь</h4>
-        <a href="#" data-phone>+7 700 448 00 00</a>
+        <a href="#" data-phone>+7 702 843 98 09</a>
       </div>
     </div>
 
@@ -530,14 +537,14 @@
      СКРИПТЫ. Порядок важен.
      data.js — контент · icons.js — иконки · core.js — ядро
      ============================================================ -->
-<script src="assets/js/data.js?v=18"></script>
-<script src="assets/js/icons.js?v=18"></script>
-<script src="assets/js/core.js?v=18"></script>
-<script src="assets/js/ui.js?v=18"></script>
-<script src="assets/js/modal.js?v=18"></script>
-<script src="assets/js/nav.js?v=18"></script>
-<script src="assets/js/map.js?v=18"></script>
-<script src="assets/js/render.js?v=18"></script>
-<script src="assets/js/main.js?v=18"></script>
+<script src="assets/js/data.js?v=20"></script>
+<script src="assets/js/icons.js?v=20"></script>
+<script src="assets/js/core.js?v=20"></script>
+<script src="assets/js/ui.js?v=20"></script>
+<script src="assets/js/modal.js?v=20"></script>
+<script src="assets/js/nav.js?v=20"></script>
+<script src="assets/js/map.js?v=20"></script>
+<script src="assets/js/render.js?v=20"></script>
+<script src="assets/js/main.js?v=20"></script>
 </body>
 </html>

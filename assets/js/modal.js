@@ -124,6 +124,15 @@ window.SQModal = (function () {
     const box = $(".modal__map", modal);
     const ready = () => box.classList.add("is-ready");
 
+    // У точки ещё нет карточки в 2ГИС — карту показать нечем
+    if (!M.hasKey() && !M.hasWidget(b)) {
+      box.classList.add("is-ready", "is-soon");
+      box.insertAdjacentHTML("beforeend",
+        '<div class="map__soon"><b>Точка ещё не появилась на карте 2ГИС</b>' +
+        "<span>Магазин готовится к открытию. Маршрут и адрес ниже уже работают.</span></div>");
+      return;
+    }
+
     if (M.hasKey()) {
       const live = document.createElement("div");
       live.className = "modal__live";

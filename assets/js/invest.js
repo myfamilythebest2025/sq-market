@@ -26,14 +26,6 @@ window.SQInvest = (function () {
     return money(n);
   }
 
-  /* Доля в процентах: 28000000 от 60000000 → «46,7%» */
-  function pct(part, total, digits = 1) {
-    if (!total) return "0%";
-    const v = (part / total) * 100;
-    const s = Math.abs(v - Math.round(v)) < 0.05 ? String(Math.round(v)) : v.toFixed(digits).replace(".", ",");
-    return s + "%";
-  }
-
   /* «16 месяцев» с правильным окончанием */
   function months(n) {
     const v = Math.max(1, Math.round(n));
@@ -46,13 +38,22 @@ window.SQInvest = (function () {
 
   /* ============================================================
      ЭКОНОМИКА ТОЧКИ — считаем один раз, пользуются все секции
+     ------------------------------------------------------------
+     Доли расходов заданы в процентах, доля прибыли = остаток.
+     Деньги берём из plannedNet — это плановая чистая прибыль точки.
      ============================================================ */
   const ECO = (function () {
     const e = D.economics;
-    const revenue = e.revenue.value;
-    const spent = e.costs.reduce((s, c) => s + c.value, 0);
-    return { revenue, spent, net: revenue - spent };
+    const spentShare = e.costs.reduce((s, c) => s + c.share, 0);
+    return {
+      spentShare,
+      netShare: Math.round((100 - spentShare) * 10) / 10,
+      net: e.plannedNet,
+    };
   })();
+
+  /* «29.2» → «29,2%», «46» → «46%» */
+  const share = (v) => String(v).replace(".", ",") + "%";
 
   /* ---------- Кнопка в фирменном стиле ---------- */
   const btn = (label, href, mod = "btn--accent", attrs = "") =>
@@ -168,6 +169,7 @@ window.SQInvest = (function () {
     $("#inv-pools").innerHTML = D.pools
       .map((p, i) => {
         const min = p.minPercent * p.pricePerPercent;
+        const max = p.maxPercent * p.pricePerPercent;
         const bar =
           p.share == null
             ? ""
@@ -191,8 +193,10 @@ window.SQInvest = (function () {
           <dl class="inv-pool__nums">
             <div><dt>Сумма проекта</dt><dd>${money(p.project)}</dd></div>
             <div><dt>Стоимость 1% доли</dt><dd>${money(p.pricePerPercent)}</dd></div>
-            <div><dt>Минимальный вход ${p.minPercent}%</dt><dd>${money(min)}</dd></div>
-            <div><dt>Дивиденды при ${p.minPercent}% доли</dt><dd>${money(ECO.net * (p.minPercent * 2) / 100)}<i>в месяц до окупаемости</i></dd></div>
+            <div><dt>Вход от ${p.minPercent}%</dt><dd>${money(min)}</dd></div>
+            <div><dt>Максимум ${p.maxPercent}% на инвестора</dt><dd>${money(max)}</dd></div>
+            <div><dt>Выплата при ${p.minPercent}% доли</dt><dd>${money(ECO.net * (p.minPercent * 2) / 100)}<i>в месяц до окупаемости</i></dd></div>
+            <div><dt>Выплата при ${p.maxPercent}% доли</dt><dd>${money(ECO.net * (p.maxPercent * 2) / 100)}<i>в месяц до окупаемости</i></dd></div>
           </dl>
           ${bar}
           <div class="inv-pool__cta">
@@ -265,20 +269,20 @@ window.SQInvest = (function () {
     const e = D.economics;
     $("#inv-eco-label").textContent = e.label;
     $("#inv-eco-title").textContent = e.title;
-    $("#inv-eco-period").innerHTML = `Показатели модели формата, <span class="inv-accent">${esc(e.period)}</span>.`;
+    $("#inv-eco-period").innerHTML = `Структура выручки точки, <span class="inv-accent">${esc(e.period)}</span>.`;
 
-    const row = (name, value, share, mod = "") => `
-      <div class="inv-row ${mod}" style="--w:${clamp(share, 0, 100)}%">
+    const row = (name, value, w, mod = "", sub = "") => `
+      <div class="inv-row ${mod}" style="--w:${clamp(w, 0, 100)}%">
         <span class="inv-row__name">${esc(name)}</span>
-        <span class="inv-row__pct">${pct(value, ECO.revenue)}</span>
-        <span class="inv-row__val">${money(value)}</span>
+        <span class="inv-row__val">${value}${sub ? `<i>${sub}</i>` : ""}</span>
         <i class="inv-row__bar" aria-hidden="true"></i>
       </div>`;
 
     $("#inv-eco-table").innerHTML =
-      row(e.revenue.name, ECO.revenue, 100, "inv-row--head") +
-      e.costs.map((c) => row(c.name, c.value, (c.value / ECO.revenue) * 100)).join("") +
-      row(e.profitName, ECO.net, (ECO.net / ECO.revenue) * 100, "inv-row--profit");
+      row(e.revenueName, "100%", 100, "inv-row--head") +
+      e.costs.map((c) => row(c.name, share(c.share), c.share)).join("") +
+      row(e.profitName, share(ECO.netShare), ECO.netShare, "inv-row--profit",
+          `${money(ECO.net)} — ${esc(e.netLabel)}`);
 
     $("#inv-eco-note").innerHTML = `${ico("check")}<span>${esc(e.note)}</span>`;
   }
@@ -294,20 +298,32 @@ window.SQInvest = (function () {
   function calc() {
     const c = D.calc;
     const pool = D.pools[0];
+    const amounts = c.amounts;
+    const last = amounts.length - 1;
+
     $("#inv-calc-label").textContent = c.label;
     $("#inv-calc-title").textContent = c.title;
     $("#inv-calc-lead").textContent = c.lead;
 
-    const min = pool.minPercent;
-    const max = c.maxPercent;
-    const start = min;
+    /* Всё, что нужно знать про один вариант участия */
+    function plan(amount) {
+      const part = amount / pool.pricePerPercent;   // доля в процентах
+      const rate = part * 2;                        // ставка до окупаемости
+      const before = (ECO.net * rate) / 100;
+      const after = (ECO.net * part) / 100;
+      const payback = before > 0 ? amount / before : 0;
+      const horizon = c.horizonYears * 12;
+      const total = before * Math.min(payback, horizon) + after * Math.max(0, horizon - payback);
+      return { amount, part, rate, before, after, payback, total };
+    }
 
     $("#inv-calc").innerHTML = `
       <div class="inv-calc__panel">
         <div class="inv-calc__head">
           <div>
-            <p class="inv-calc__cap">Ваша доля в точке</p>
-            <p class="inv-calc__share"><b id="calc-share">${String(start).replace(".", ",")}</b><i>%</i></p>
+            <p class="inv-calc__cap">Сумма вложения</p>
+            <p class="inv-calc__sum"><b id="calc-invest"></b></p>
+            <p class="inv-calc__part">Ваша доля — <b id="calc-share"></b></p>
           </div>
           <div class="inv-calc__pool">
             <span>${esc(pool.n)} · ${esc(pool.title)}</span>
@@ -316,24 +332,22 @@ window.SQInvest = (function () {
         </div>
 
         <label class="inv-calc__slider">
-          <span class="sr-only">Размер доли в процентах</span>
-          <input type="range" id="calc-range" min="${min}" max="${max}" step="0.5" value="${start}"
-                 aria-label="Размер доли в процентах">
-          <span class="inv-calc__scale" aria-hidden="true"><i>${min}%</i><i>${max}%</i></span>
+          <span class="sr-only">Сумма вложения</span>
+          <input type="range" id="calc-range" min="0" max="${last}" step="1" value="0"
+                 aria-label="Сумма вложения">
+          <span class="inv-calc__scale" aria-hidden="true">
+            <i>${short(amounts[0])}</i><i>${short(amounts[last])}</i>
+          </span>
         </label>
 
         <div class="inv-calc__grid">
-          <div class="inv-calc__cell inv-calc__cell--wide">
-            <span>Сумма вложения</span>
-            <b id="calc-invest"></b>
-          </div>
-          <div class="inv-calc__cell inv-calc__cell--accent">
-            <span>Дивиденды до окупаемости</span>
+          <div class="inv-calc__cell inv-calc__cell--accent inv-calc__cell--wide">
+            <span>Выплата в месяц до окупаемости</span>
             <b id="calc-before"></b>
             <i id="calc-before-note"></i>
           </div>
           <div class="inv-calc__cell">
-            <span>Дивиденды после окупаемости</span>
+            <span>После окупаемости</span>
             <b id="calc-after"></b>
             <i id="calc-after-note"></i>
           </div>
@@ -351,14 +365,41 @@ window.SQInvest = (function () {
 
         <div class="inv-calc__foot">
           ${btn(c.cta, "#form", "btn--accent btn--lg", 'id="calc-cta"')}
-          <p class="faint">Чистая прибыль точки в модели — ${money(ECO.net)} в месяц.</p>
+          <p class="faint">${esc(c.note)}</p>
+        </div>
+      </div>
+
+      <div class="inv-variants" data-reveal>
+        <h3>${esc(c.tableTitle)}</h3>
+        <div class="inv-variants__scroll">
+          <table>
+            <thead><tr>${c.tableHead.map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead>
+            <tbody>
+              ${amounts
+                .map((a, i) => {
+                  const p = plan(a);
+                  // data-l — подпись ячейки: на телефоне строка превращается
+                  // в карточку, и заголовки таблицы там не видны
+                  return `<tr data-i="${i}" tabindex="0" role="button"
+                              aria-label="Вложить ${short(a)}, доля ${share(p.part)}">
+                    <td data-l="${esc(c.tableHead[0])}"><b>${short(a)}</b></td>
+                    <td data-l="${esc(c.tableHead[1])}">${share(p.part)}</td>
+                    <td data-l="${esc(c.tableHead[2])}">${share(p.rate)}</td>
+                    <td class="is-key" data-l="${esc(c.tableHead[3])}">${money(p.before)}</td>
+                    <td data-l="${esc(c.tableHead[4])}">${money(p.after)}</td>
+                  </tr>`;
+                })
+                .join("")}
+            </tbody>
+          </table>
         </div>
       </div>`;
 
     const range = $("#calc-range");
+    const rows = $$("#inv-calc tbody tr");
     const out = {
-      share: $("#calc-share"),
       invest: $("#calc-invest"),
+      share: $("#calc-share"),
       before: $("#calc-before"),
       beforeNote: $("#calc-before-note"),
       after: $("#calc-after"),
@@ -368,35 +409,40 @@ window.SQInvest = (function () {
       horizonNote: $("#calc-horizon-note"),
     };
 
-    let lastShare = start;
+    let current = plan(amounts[0]);
 
     function update() {
-      const share = parseFloat(range.value);
-      lastShare = share;
+      const i = clamp(parseInt(range.value, 10) || 0, 0, last);
+      const p = plan(amounts[i]);
+      current = p;
 
-      const invest = share * pool.pricePerPercent;
-      const before = (ECO.net * share * 2) / 100;
-      const after = (ECO.net * share) / 100;
-      const payback = before > 0 ? invest / before : 0;
+      out.invest.textContent = money(p.amount);
+      out.share.textContent = share(p.part);
+      out.before.textContent = money(p.before);
+      out.beforeNote.textContent = `${share(p.rate)} от чистой прибыли, ежемесячно`;
+      out.after.textContent = money(p.after);
+      out.afterNote.textContent = `${share(p.part)} от чистой прибыли, бессрочно`;
+      out.payback.textContent = months(p.payback);
+      out.horizon.textContent = short(p.total);
+      out.horizonNote.textContent = `сверх вложений — ${short(Math.max(0, p.total - p.amount))}`;
 
-      const horizonMonths = c.horizonYears * 12;
-      const atDouble = Math.min(payback, horizonMonths);
-      const total = before * atDouble + after * Math.max(0, horizonMonths - payback);
-
-      out.share.textContent = String(share).replace(".", ",");
-      out.invest.textContent = money(invest);
-      out.before.textContent = money(before);
-      out.beforeNote.textContent = `${(share * 2).toString().replace(".", ",")}% от чистой прибыли, ежемесячно`;
-      out.after.textContent = money(after);
-      out.afterNote.textContent = `${String(share).replace(".", ",")}% от чистой прибыли, бессрочно`;
-      out.payback.textContent = months(payback);
-      out.horizon.textContent = short(total);
-      out.horizonNote.textContent = `сверх вложений — ${short(Math.max(0, total - invest))}`;
-
-      range.style.setProperty("--p", ((share - min) / (max - min)) * 100 + "%");
+      range.style.setProperty("--p", (i / last) * 100 + "%");
+      rows.forEach((r, k) => r.classList.toggle("is-on", k === i));
     }
 
     on(range, "input", update);
+
+    /* Строка таблицы — тоже переключатель варианта */
+    rows.forEach((r) => {
+      const pick = () => { range.value = r.dataset.i; update(); };
+      on(r, "click", pick);
+      on(r, "keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        pick();
+      });
+    });
+
     update();
 
     /* Кнопка «Хочу такую долю» — подставляем расчёт в сообщение формы */
@@ -404,8 +450,8 @@ window.SQInvest = (function () {
       const msg = $("#f-msg");
       if (!msg) return;
       msg.value =
-        `Интересует доля ${String(lastShare).replace(".", ",")}% в пуле «${pool.title}». ` +
-        `Сумма вложения — ${money(lastShare * pool.pricePerPercent).replace(/ /g, " ")}.`;
+        `Интересует доля ${share(current.part)} в пуле «${pool.title}» — ` +
+        `вложение ${money(current.amount)}.`;
       msg.dispatchEvent(new Event("input"));
     });
   }

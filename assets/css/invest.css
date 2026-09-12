@@ -641,7 +641,7 @@
 .inv-row {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 7ch minmax(0, 13ch);
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 1rem;
   padding: clamp(0.9rem, 1.7vw, 1.25rem) clamp(1rem, 2.2vw, 1.8rem);
@@ -665,18 +665,23 @@
 
 .inv-row__name { font-weight: 600; }
 
-.inv-row__pct {
-  font-family: var(--font-display);
-  font-size: var(--fs-small);
-  color: var(--ink-faint);
-  text-align: right;
-}
-
 .inv-row__val {
   font-family: var(--font-display);
   font-size: clamp(0.95rem, 1.3vw, 1.12rem);
   text-align: right;
   white-space: nowrap;
+}
+
+/* Приписка под значением — сумма плановой прибыли */
+.inv-row__val i {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  white-space: normal;
+  color: var(--ink-soft);
 }
 
 .inv-row--head {
@@ -685,7 +690,6 @@
 }
 
 .inv-row--head .inv-row__bar { background: transparent; }
-.inv-row--head .inv-row__pct { color: var(--ink-soft); }
 
 .inv-row--profit {
   background: color-mix(in srgb, var(--primary) 14%, transparent);
@@ -729,17 +733,26 @@
   color: var(--ink-faint);
 }
 
-.inv-calc__share {
-  display: flex;
-  align-items: baseline;
-  gap: 0.1em;
+.inv-calc__sum {
   font-family: var(--font-display);
-  line-height: 1;
+  font-size: clamp(1.9rem, 5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.05;
   color: var(--accent);
+  white-space: nowrap;
 }
 
-.inv-calc__share b { font-size: clamp(3rem, 8vw, 5.6rem); font-weight: 800; }
-.inv-calc__share i { font-size: clamp(1.4rem, 3vw, 2.4rem); font-style: normal; }
+.inv-calc__part {
+  margin-top: 0.45rem;
+  font-size: var(--fs-body);
+  color: var(--ink-soft);
+}
+
+.inv-calc__part b {
+  font-family: var(--font-display);
+  font-size: 1.1em;
+  color: var(--ink);
+}
 
 .inv-calc__pool {
   text-align: right;
@@ -874,7 +887,81 @@
   margin-top: clamp(1.3rem, 2.4vw, 2rem);
 }
 
-.inv-calc__foot .faint { font-size: var(--fs-small); }
+.inv-calc__foot .faint { font-size: var(--fs-small); max-width: 52ch; }
+
+/* --- Таблица всех вариантов участия --- */
+.inv-variants { margin-top: clamp(1.6rem, 3vw, 2.6rem); }
+
+.inv-variants h3 {
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+  margin-bottom: clamp(0.8rem, 1.6vw, 1.2rem);
+}
+
+/* Узкий экран: таблица скроллится внутри себя, страница — нет */
+.inv-variants__scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  -webkit-overflow-scrolling: touch;
+}
+
+.inv-variants table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 520px;
+}
+
+.inv-variants th {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  background: var(--bg-sunk);
+  white-space: nowrap;
+}
+
+.inv-variants td {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--line);
+  white-space: nowrap;
+  color: var(--ink-soft);
+}
+
+.inv-variants tbody tr {
+  cursor: pointer;
+  transition: background var(--t-fast) var(--e-out);
+}
+
+.inv-variants tbody tr:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+
+.inv-variants tbody tr:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.inv-variants td b {
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+
+.inv-variants td.is-key {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Выбранный в калькуляторе вариант */
+.inv-variants tbody tr.is-on {
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+}
+
+.inv-variants tbody tr.is-on td,
+.inv-variants tbody tr.is-on td b { color: var(--ink); }
+.inv-variants tbody tr.is-on td.is-key { color: var(--accent); }
 
 /* ============================================================
    8. КАК СТАТЬ АКЦИОНЕРОМ
@@ -1142,15 +1229,58 @@
   .inv-next__list li { grid-template-columns: auto minmax(0, 1fr); }
   .inv-next__list em { grid-column: 2; }
 
-  /* Таблица экономики: процент уезжает под название */
+  /* Таблица экономики: название слева, доля справа */
   .inv-row {
-    grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.2rem 1rem;
     padding: 0.9rem 1rem;
   }
-  .inv-row__name { grid-column: 1; }
-  .inv-row__val { grid-column: 2; grid-row: 1; }
-  .inv-row__pct { grid-column: 1; grid-row: 2; text-align: left; }
+  .inv-row__val i { text-align: right; }
+
+  /* Таблица вариантов на телефоне — карточки, а не прокрутка вбок:
+     горизонтальный свайп внутри страницы ловит палец (та же причина,
+     по которой на главной убраны карусели). */
+  .inv-variants__scroll { overflow: visible; border: 0; }
+  .inv-variants table { display: block; min-width: 0; }
+  .inv-variants thead { display: none; }
+  .inv-variants tbody { display: grid; gap: 0.6rem; }
+
+  .inv-variants tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem 0.9rem;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--bg-elev);
+  }
+
+  .inv-variants td {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0;
+    border: 0;
+    white-space: normal;
+  }
+
+  .inv-variants td::before {
+    content: attr(data-l);
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* Сумма вложения — шапка карточки */
+  .inv-variants td:first-child {
+    grid-column: 1 / -1;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .inv-variants td:first-child b { font-size: 1.25rem; }
+  .inv-variants td.is-key { color: var(--accent); }
+  .inv-variants tbody tr.is-on { border-color: var(--accent); }
 
   /* Ползунок под палец: полоса толще, бегунок крупнее */
   .inv-calc__slider input[type="range"] { height: 20px; }

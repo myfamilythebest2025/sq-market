@@ -419,3 +419,9 @@
   .gallery__grid { grid-auto-columns: 84%; }
   .footer__grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Полоса «Инвесторам» — на телефоне в одну колонку */
+@media (max-width: 860px) {
+  .invest-bridge { grid-template-columns: minmax(0, 1fr); }
+  .invest-bridge__go { justify-content: center; }
+}

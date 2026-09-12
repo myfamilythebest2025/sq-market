@@ -22,14 +22,17 @@ window.SQNav = (function () {
     const mobile = $(".mobile-nav__links");
     if (!navEl) return;
 
-    const links = window.SQ.nav;
+    // window.SQ_NAV — меню отдельной страницы («Инвесторам»).
+    // Если у пункта есть href, он ведёт на другую страницу, а не на якорь.
+    const links = window.SQ_NAV || window.SQ.nav;
+    const href = (l) => l.href || "#" + l.id;
 
     navEl.innerHTML =
       '<span class="pill-nav__blob" aria-hidden="true"></span>' +
       links
         .map(
           (l) => `
-        <a class="pill-nav__item" href="#${l.id}" data-nav="${l.id}" style="--item-color:${l.color}">
+        <a class="pill-nav__item" href="${href(l)}" data-nav="${l.id || ""}" style="--item-color:${l.color}">
           <i class="pn-dot" aria-hidden="true"></i>
           <span class="pn-slot">
             <span>${l.label}</span>
@@ -41,7 +44,7 @@ window.SQNav = (function () {
 
     if (mobile) {
       mobile.innerHTML = links
-        .map((l, i) => `<a href="#${l.id}" style="--d:${120 + i * 55}ms">${l.label}</a>`)
+        .map((l, i) => `<a href="${href(l)}" style="--d:${120 + i * 55}ms">${l.label}</a>`)
         .join("");
     }
 
@@ -107,7 +110,7 @@ window.SQNav = (function () {
 
   /* ---------- Подсветка активной секции ---------- */
   function watchSections() {
-    const ids = window.SQ.nav.map((n) => n.id);
+    const ids = (window.SQ_NAV || window.SQ.nav).map((n) => n.id).filter(Boolean);
     const sections = ids.map((id) => document.getElementById(id)).filter(Boolean);
     if (!sections.length) return;
 

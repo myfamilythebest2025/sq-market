@@ -295,7 +295,9 @@ window.SQRender = (function () {
       const lines = [
         { i: "phone", b: c.phone, s: "Звонок и WhatsApp", href: `tel:+${c.phoneRaw}` },
         { i: "chat", b: "Написать в WhatsApp", s: "Отвечаем в рабочее время", href: wa },
-        { i: "pin", b: `${window.SQ.branches.length} точки в городе ${esc(c.city)}`, s: "Смотрите на карте 2ГИС", href: "#places" },
+        { i: "pin", b: `${window.SQ.branches.length} точки в городе ${esc(c.city)}`, s: "Смотрите на карте 2ГИС",
+          // на странице «Инвесторам» секции с картой нет — уводим на главную
+          href: document.getElementById("places") ? "#places" : "index.html#places" },
         { i: "clock", b: "Круглосуточно", s: "Без выходных и перерывов" },
       ];
       if (c.email) lines.splice(2, 0, { i: "mail", b: c.email, s: "Почта для партнёров", href: "mailto:" + c.email });
@@ -318,8 +320,10 @@ window.SQRender = (function () {
 
     const nav = $("#footer-nav");
     if (nav) {
-      nav.innerHTML = window.SQ.nav
-        .map((n) => `<li><a href="#${n.id}">${esc(n.label)}</a></li>`)
+      // window.SQ_NAV задаёт своё меню странице «Инвесторам»;
+      // у пункта может быть готовый href вместо якоря
+      nav.innerHTML = (window.SQ_NAV || window.SQ.nav)
+        .map((n) => `<li><a href="${esc(n.href || "#" + n.id)}">${esc(n.label)}</a></li>`)
         .join("");
     }
 
@@ -395,6 +399,11 @@ window.SQRender = (function () {
     init() {
       hero(); mix(); inside(); day(); menu();
       gallery(); branches(); faq(); contacts(); form();
+    },
+    /* Только контакты, футер и форма — этим пользуется страница «Инвесторам»,
+       где секций главной нет. */
+    initContact() {
+      contacts(); form();
     },
     btn,
   };

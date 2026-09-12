@@ -1105,19 +1105,21 @@
 }
 
 @media (max-width: 980px) {
-  .inv-offer__grid { grid-template-columns: 1fr; }
-  .inv-pool { grid-template-columns: 1fr; }
-  .inv-pool__media { min-height: 200px; aspect-ratio: 16 / 9; }
-  .inv-founder { grid-template-columns: 1fr; }
+  .inv-offer__grid { grid-template-columns: minmax(0, 1fr); }
+  .inv-pool { grid-template-columns: minmax(0, 1fr); }
+  /* min-height вместе с aspect-ratio задаёт браузеру ШИРИНУ (200 × 16/9 = 355 px),
+     и фото вылезало за карточку. Высоту здесь определяет только пропорция. */
+  .inv-pool__media { min-height: 0; aspect-ratio: 16 / 9; width: 100%; }
+  .inv-founder { grid-template-columns: minmax(0, 1fr); }
   .inv-founder__photo { max-width: 420px; }
-  .inv-brand__inner { grid-template-columns: 1fr; }
+  .inv-brand__inner { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 860px) {
   .inv-hero { min-height: auto; padding-block: 7.5rem 3rem; }
   .inv-hero h1 { max-width: none; }
 
-  .inv-hero__stats { grid-template-columns: 1fr; gap: 0.6rem; }
+  .inv-hero__stats { grid-template-columns: minmax(0, 1fr); gap: 0.6rem; }
   .inv-stat { display: flex; align-items: baseline; gap: 0.8rem; padding: 0.85rem 1.1rem; }
   .inv-stat b { font-size: 1.75rem; }
   .inv-stat span { margin-top: 0; font-size: 0.82rem; }
@@ -1128,12 +1130,12 @@
   .inv-step { grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
   .inv-step__n { font-size: 2.4rem; }
 
-  .inv-terms { grid-template-columns: 1fr; }
+  .inv-terms { grid-template-columns: minmax(0, 1fr); }
 
   .inv-example__flow { flex-direction: column; }
   .inv-example__arrow { transform: rotate(90deg); }
 
-  .inv-pool__nums { grid-template-columns: 1fr; }
+  .inv-pool__nums { grid-template-columns: minmax(0, 1fr); }
   .inv-pool__cta { display: grid; }
   .inv-pool__cta .btn { width: 100%; justify-content: center; }
 
@@ -1150,16 +1152,21 @@
   .inv-row__val { grid-column: 2; grid-row: 1; }
   .inv-row__pct { grid-column: 1; grid-row: 2; text-align: left; }
 
+  /* Ползунок под палец: полоса толще, бегунок крупнее */
+  .inv-calc__slider input[type="range"] { height: 20px; }
+  .inv-calc__slider input[type="range"]::-webkit-slider-thumb { width: 40px; height: 40px; }
+  .inv-calc__slider input[type="range"]::-moz-range-thumb { width: 34px; height: 34px; }
+
   .inv-calc__panel { padding: 1.2rem; border-radius: var(--r-lg); }
   .inv-calc__head { align-items: flex-start; }
   .inv-calc__pool { width: 100%; text-align: left; }
-  .inv-calc__grid { grid-template-columns: 1fr; }
+  .inv-calc__grid { grid-template-columns: minmax(0, 1fr); }
   .inv-calc__cell--wide { grid-column: span 1; }
   .inv-calc__cell > b { white-space: normal; }
   .inv-calc__foot { display: grid; }
   .inv-calc__foot .btn { width: 100%; justify-content: center; }
 
-  .inv-path { grid-template-columns: 1fr; }
+  .inv-path { grid-template-columns: minmax(0, 1fr); }
   .inv-founder__goal { margin-top: 0.8rem; }
 }
 

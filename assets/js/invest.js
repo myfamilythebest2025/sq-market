@@ -160,6 +160,11 @@ window.SQInvest = (function () {
   /* ============================================================
      4. ПУЛЫ
      ============================================================ */
+  /* Ячейка с цифрой пула. Значение пустое — ячейки просто не будет:
+     так со страницы убрана сумма проекта, но вернуть её можно одним числом. */
+  const cell = (label, value, sub = "") =>
+    value ? `<div><dt>${esc(label)}</dt><dd>${value}${sub ? `<i>${esc(sub)}</i>` : ""}</dd></div>` : "";
+
   function pools() {
     const intro = D.poolsIntro;
     $("#inv-pools-label").textContent = intro.label;
@@ -191,12 +196,14 @@ window.SQInvest = (function () {
           <p class="inv-pool__area">${ico("pin")}<span>${esc(p.area)}</span></p>
 
           <dl class="inv-pool__nums">
-            <div><dt>Сумма проекта</dt><dd>${money(p.project)}</dd></div>
-            <div><dt>Стоимость 1% доли</dt><dd>${money(p.pricePerPercent)}</dd></div>
-            <div><dt>Вход от ${p.minPercent}%</dt><dd>${money(min)}</dd></div>
-            <div><dt>Максимум ${p.maxPercent}% на инвестора</dt><dd>${money(max)}</dd></div>
-            <div><dt>Выплата при ${p.minPercent}% доли</dt><dd>${money(ECO.net * (p.minPercent * 2) / 100)}<i>в месяц до окупаемости</i></dd></div>
-            <div><dt>Выплата при ${p.maxPercent}% доли</dt><dd>${money(ECO.net * (p.maxPercent * 2) / 100)}<i>в месяц до окупаемости</i></dd></div>
+            ${cell("Сумма проекта", p.project && money(p.project))}
+            ${cell("Стоимость 1% доли", money(p.pricePerPercent))}
+            ${cell(`Вход от ${p.minPercent}%`, money(min))}
+            ${cell(`Максимум ${p.maxPercent}% на инвестора`, money(max))}
+            ${cell(`Выплата при ${p.minPercent}% доли`,
+                   money(ECO.net * (p.minPercent * 2) / 100), "в месяц до окупаемости")}
+            ${cell(`Выплата при ${p.maxPercent}% доли`,
+                   money(ECO.net * (p.maxPercent * 2) / 100), "в месяц до окупаемости")}
           </dl>
           ${bar}
           <div class="inv-pool__cta">

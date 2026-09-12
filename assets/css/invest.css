@@ -430,6 +430,9 @@
 
 .inv-pool__nums > div:last-child dd { color: var(--primary); }
 
+/* Нечётное число ячеек — последняя занимает ряд целиком, без дыры справа */
+.inv-pool__nums > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
 .inv-pool__bar { display: grid; gap: 0.5rem; }
 
 .inv-pool__bar i {

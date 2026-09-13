@@ -520,14 +520,17 @@ window.SQInvest = (function () {
                onerror="this.closest('.inv-founder__photo').classList.add('is-empty');this.remove()">
           <span class="inv-founder__initials" aria-hidden="true">${esc(f.initials)}</span>
         </div>
-        <div class="inv-founder__goal">
-          <b>${esc(f.goal.value)}</b><span>${esc(f.goal.label)}</span>
-        </div>
       </div>
 
       <div class="inv-founder__body" data-reveal="right">
         <p class="label">${esc(f.label)}</p>
         <h2>${esc(f.name)}</h2>
+        ${f.lead ? `<p class="inv-founder__lead">${esc(f.lead)}</p>` : ""}
+        ${(f.stats || []).length
+          ? `<div class="inv-founder__stats">
+               ${f.stats.map((s) => `<div><b>${esc(s.value)}</b><span>${esc(s.label)}</span></div>`).join("")}
+             </div>`
+          : ""}
         <ul class="inv-founder__facts">
           ${f.facts.map((x) => `<li><span>${ico("check")}</span>${esc(x)}</li>`).join("")}
         </ul>
